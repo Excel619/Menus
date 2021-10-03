@@ -5,7 +5,7 @@ import com.gmail.excel8392.menus.menu.PagedMenu
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 
-class TurnPageAction(val type: Type): Action {
+class ChangePageAction(val type: Type): Action {
 
     override fun execute(event: InventoryClickEvent) {
         // Check that the inventory holder is a custom Menu
