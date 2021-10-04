@@ -13,17 +13,14 @@ class MenusListener(val plugin: Plugin): Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     fun onInventoryClick(event: InventoryClickEvent) {
-        // Check that the inventory holder is a custom Menu
-        if (event.inventory.holder !is Menu) return
-
-        // Cast to custom Menu
-        val menu = event.inventory.holder as Menu
+        // Cast to custom Menu, if !is Menu then return
+        val menu = event.inventory.holder as? Menu ?: return
         // Ensure that this menu is to be handled by the plugin that registered this Menus API.
         // This is significant because multiple Menus APIs can be created by different plugins,
         // and without this check each menu click would be handled several times.
         if (menu.plugin != plugin) return
         // Ensure that the slot clicked is not empty
-        if (event.currentItem?.type == Material.AIR) return
+        if (event.currentItem?.type ?: return == Material.AIR) return
 
         // Fire the on click event for the menu
         menu.onClick(event)
@@ -39,11 +36,8 @@ class MenusListener(val plugin: Plugin): Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     fun onInventoryClose(event: InventoryCloseEvent) {
-        // Check that the inventory holder is a custom Menu
-        if (event.inventory.holder !is Menu) return
-
-        // Cast to custom Menu
-        val menu = event.inventory.holder as Menu
+        // Cast to custom Menu, if !is Menu then return
+        val menu = event.inventory.holder as? Menu ?: return
         // Ensure that this menu is to be handled by the plugin that registered this Menus API.
         // This is significant because multiple Menus APIs can be created by different plugins,
         // and without this check each menu click would be handled several times.

@@ -8,13 +8,10 @@ import org.bukkit.event.inventory.InventoryClickEvent
 class ChangePageAction(val type: Type): Action {
 
     override fun execute(event: InventoryClickEvent) {
-        // Check that the inventory holder is a custom Menu
-        if (event.whoClicked !is Player || event.inventory.holder == null || event.inventory.holder !is PagedMenu) return
-
         // Player object of who clicked
-        val player = event.whoClicked as Player
+        val player = event.whoClicked as? Player ?: return
         // Cast to custom Menu
-        val pagedMenu = event.inventory.holder as PagedMenu
+        val pagedMenu = event.inventory.holder as? PagedMenu ?: return
 
         // Open menu depending on action type
         when (type) {
