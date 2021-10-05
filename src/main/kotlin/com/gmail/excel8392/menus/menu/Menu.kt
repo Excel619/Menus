@@ -48,8 +48,8 @@ open class Menu @JvmOverloads constructor(
 
         // Sort all animations into a map for easier logic down the road
         for (animation in animations) {
-            if (!sortedAnimations.containsKey(animation.getInterval())) sortedAnimations[animation.getInterval()] = LinkedList()
-            sortedAnimations[animation.getInterval()]!!.add(animation)
+            if (!sortedAnimations.containsKey(animation.interval)) sortedAnimations[animation.interval] = LinkedList()
+            sortedAnimations[animation.interval]!!.add(animation)
         }
         // This is the interval we will use as the lowest possible interval to cover all animation intverals
         animationInterval = NumberUtil.gcd(sortedAnimations.keys).toLong()
@@ -116,8 +116,8 @@ open class Menu @JvmOverloads constructor(
             task = Bukkit.getScheduler().runTaskTimer(plugin, Runnable {
                 for (animation in intervalCounter.keys) {
                     intervalCounter[animation] = intervalCounter[animation]!! + animationInterval
-                    if (intervalCounter[animation]!! >= animation.getInterval()) {
-                        intervalCounter[animation] = intervalCounter[animation]!! - animation.getInterval()
+                    if (intervalCounter[animation]!! >= animation.interval) {
+                        intervalCounter[animation] = intervalCounter[animation]!! - animation.interval
                         animation.tickAnimation(player, this@Menu)
                     }
                 }

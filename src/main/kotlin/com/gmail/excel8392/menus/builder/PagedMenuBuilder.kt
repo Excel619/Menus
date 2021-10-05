@@ -1,5 +1,6 @@
 package com.gmail.excel8392.menus.builder
 
+import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.menu.MenuItem
 import com.gmail.excel8392.menus.menu.MenuPageItems
 import com.gmail.excel8392.menus.menu.PagedMenu
@@ -9,6 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import java.util.LinkedList
 
 class PagedMenuBuilder @JvmOverloads constructor(
     var plugin: Plugin,
@@ -18,6 +20,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
 ): MenuBuilder{
 
     private var pages: MutableList<MenuPageItems> = ArrayList()
+    private var animations: MutableList<MenuAnimation> = LinkedList<MenuAnimation>()
     private var interactionsBlocked = true
     private var onClose: (InventoryCloseEvent) -> Unit = {}
     private var onClick: (InventoryClickEvent) -> Unit = {}
@@ -32,6 +35,16 @@ class PagedMenuBuilder @JvmOverloads constructor(
 
     override fun addItem(menuItem: MenuItem): MenuBuilder {
         setStaticItem(MenuUtil.getFirstEmptySlot(pages[0].items, pages[0].size), menuItem)
+        return this
+    }
+
+    override fun addAnimation(menuAnimation: MenuAnimation): PagedMenuBuilder {
+        animations.add(menuAnimation)
+        return this
+    }
+
+    fun setAnimations(animations: MutableList<MenuAnimation>): PagedMenuBuilder {
+        this.animations = animations
         return this
     }
 
@@ -81,6 +94,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
         plugin,
         ChatColor.translateAlternateColorCodes(colorPrefix, title),
         pages,
+        animations,
         interactionsBlocked = interactionsBlocked,
         onClose = onClose,
         onClick = onClick
@@ -95,6 +109,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
         }
         return PagedMenuBuilder(plugin, title, defaultSize, colorPrefix = colorPrefix)
             .setPages(newPages)
+            .setAnimations(animations)
             .setInteractionsBlocked(interactionsBlocked)
             .setOnClose(onClose)
             .setOnClick(onClick)

@@ -1,6 +1,7 @@
 package com.gmail.excel8392.menus.menu
 
 import com.gmail.excel8392.menus.PagedMenusManager
+import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.util.MenuUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -19,6 +20,7 @@ class PagedMenu @JvmOverloads constructor(
     plugin: Plugin,
     title: String,
     val pageItems: List<MenuPageItems>,
+    animations: List<MenuAnimation>,
     interactionsBlocked: Boolean = true,
     onClick: (InventoryClickEvent) -> Unit = {},
     onClose: (InventoryCloseEvent) -> Unit = {}
@@ -27,6 +29,7 @@ class PagedMenu @JvmOverloads constructor(
     title,
     pageItems.firstOrNull()?.items ?: throw IllegalArgumentException("PagedMenu must have at least one page!"),
     pageItems.firstOrNull()?.size ?: throw IllegalArgumentException("PagedMenu must have at least one page!"),
+    animations,
     interactionsBlocked,
     onClick,
     onClose

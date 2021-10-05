@@ -5,7 +5,7 @@ import org.bukkit.entity.Player
 
 interface MenuAnimation {
 
-    fun getInterval(): Int
+    val interval: Int
 
     fun tickAnimation(viewer: Player, menu: Menu)
 

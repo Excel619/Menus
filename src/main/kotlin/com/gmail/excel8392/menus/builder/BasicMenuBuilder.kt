@@ -1,13 +1,14 @@
 package com.gmail.excel8392.menus.builder
 
+import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.menu.Menu
 import com.gmail.excel8392.menus.menu.MenuItem
 import com.gmail.excel8392.menus.util.MenuUtil
 import org.bukkit.ChatColor
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import java.util.LinkedList
 
 class BasicMenuBuilder @JvmOverloads constructor(
     var plugin: Plugin,
@@ -17,6 +18,7 @@ class BasicMenuBuilder @JvmOverloads constructor(
 ): MenuBuilder {
 
     private var items: MutableMap<Int, MenuItem> = HashMap()
+    private var animations: MutableList<MenuAnimation> = LinkedList<MenuAnimation>()
     private var interactionsBlocked = true
     private var onClose: (InventoryCloseEvent) -> Unit = {}
     private var onClick: (InventoryClickEvent) -> Unit = {}
@@ -34,8 +36,18 @@ class BasicMenuBuilder @JvmOverloads constructor(
         return this
     }
 
-    override fun addItem(menuItem: MenuItem): MenuBuilder {
+    override fun addItem(menuItem: MenuItem): BasicMenuBuilder {
         items[MenuUtil.getFirstEmptySlot(items, size)] = menuItem
+        return this
+    }
+
+    override fun addAnimation(menuAnimation: MenuAnimation): BasicMenuBuilder {
+        animations.add(menuAnimation)
+        return this
+    }
+
+    fun setAnimations(animations: MutableList<MenuAnimation>): BasicMenuBuilder {
+        this.animations = animations
         return this
     }
 
@@ -64,9 +76,11 @@ class BasicMenuBuilder @JvmOverloads constructor(
         plugin,
         ChatColor.translateAlternateColorCodes(colorPrefix, title),
         items,
+        size,
+        animations,
         interactionsBlocked = interactionsBlocked,
-        onClose = onClose,
-        onClick = onClick
+        onCloseHandler = onClose,
+        onClickHandler = onClick
     )
 
     override fun clone(): BasicMenuBuilder {
@@ -74,6 +88,7 @@ class BasicMenuBuilder @JvmOverloads constructor(
         for ((slot, menuItem) in items) newItems[slot] = menuItem
         return BasicMenuBuilder(plugin, title, size, colorPrefix = colorPrefix)
             .setItems(newItems)
+            .setAnimations(animations)
             .setInteractionsBlocked(interactionsBlocked)
             .setOnClose(onClose)
             .setOnClick(onClick)
