@@ -16,6 +16,7 @@ object PagedMenusManager: Listener {
     private val menuPages = HashMap<UUID, Int>()
 
     @JvmStatic
+    @JvmOverloads
     fun openPagedMenu(player: Player, menu: PagedMenu, page: Int = 0) {
         player.openInventory(menu.getInventoryPage(page))
         menuPages[player.uniqueId] = page
