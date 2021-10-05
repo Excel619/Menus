@@ -5,6 +5,9 @@ import com.gmail.excel8392.menus.menu.MenuPageItems
 import kotlin.math.ceil
 import kotlin.math.max
 
+/**
+ * Utility methods for Menu related operations in this library.
+ */
 internal object MenuUtil {
 
     /**

@@ -15,6 +15,7 @@ class Menus(val plugin: Plugin): MenusAPI {
         if (menusAPIs.containsKey(plugin)) throw IllegalArgumentException("A MenusAPI has already been created for plugin \"${plugin.name}\"!")
         menusAPIs[plugin] = this
         Bukkit.getPluginManager().registerEvents(MenusListener(plugin), plugin)
+        Bukkit.getPluginManager().registerEvents(PagedMenusManager, plugin)
     }
 
     override fun openMenu(player: Player, menu: Menu) {
