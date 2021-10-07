@@ -19,7 +19,9 @@ class PagedMenuBuilder @JvmOverloads constructor(
     private var colorPrefix: Char = '&'
 ): MenuBuilder{
 
-    private var pages: MutableList<MenuPageItems> = ArrayList()
+    var pages: MutableList<MenuPageItems> = ArrayList()
+        private set
+    private var staticItems = HashMap<Int, Pair<MenuItem, IntArray>>()
     private var animations: MutableList<MenuAnimation> = LinkedList<MenuAnimation>()
     private var interactionsBlocked = true
     private var onClose: (InventoryCloseEvent) -> Unit = {}
@@ -49,7 +51,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
     }
 
     fun setItem(slot: Int, pageNumber: Int, menuItem: MenuItem): PagedMenuBuilder {
-        while (pageNumber >= pages.size) pages.add(MenuPageItems(defaultSize))
+        while (pageNumber >= pages.size) addPage()
         pages[pageNumber].setItem(slot, menuItem)
         return this
     }
@@ -59,8 +61,9 @@ class PagedMenuBuilder @JvmOverloads constructor(
         return this
     }
 
-    fun setStaticItem(slot: Int, item: MenuItem): PagedMenuBuilder {
-        for (page in pages) page.setItem(slot, item)
+    fun setStaticItem(slot: Int, item: MenuItem, vararg excludePages: Int = intArrayOf()): PagedMenuBuilder {
+        staticItems[slot] = Pair(item, excludePages)
+        for ((index, page) in pages.withIndex()) if (!excludePages.contains(index)) page.setItem(slot, item)
         return this
     }
 
@@ -88,6 +91,30 @@ class PagedMenuBuilder @JvmOverloads constructor(
     override fun setOnClick(onClick: (InventoryClickEvent) -> Unit): PagedMenuBuilder {
         this.onClick = onClick
         return this
+    }
+
+    @JvmOverloads
+    fun addPage(amount: Int = 1, size: Int = defaultSize) {
+        val initialSize = pages.size
+        repeat(amount) {
+            val pageItems = MenuPageItems(defaultSize)
+            for (slot in staticItems.keys) {
+                if (!staticItems[slot]!!.second.contains(it + initialSize)) {
+                    pageItems.setItem(slot, staticItems[slot]!!.first)
+                }
+            }
+            pages.add(pageItems)
+        }
+    }
+
+    fun setMenuLength(length: Int) {
+        if (length > pages.size) {
+            addPage(amount = length - pages.size)
+        } else if (length < pages.size) {
+            repeat(pages.size - length) {
+                pages.removeLast()
+            }
+        }
     }
 
     override fun build() = PagedMenu(

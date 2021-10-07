@@ -20,7 +20,10 @@ class MenusListener(val plugin: Plugin): Listener {
         // and without this check each menu click would be handled several times.
         if (menu.plugin != plugin) return
         // Ensure that the slot clicked is not empty
-        if (event.currentItem?.type ?: return == Material.AIR) return
+        if (event.currentItem?.type ?: return == Material.AIR) {
+            event.isCancelled = menu.interactionsBlocked
+            return
+        }
 
         // Fire the on click event for the menu
         menu.onClick(event)

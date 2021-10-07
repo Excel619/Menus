@@ -21,7 +21,7 @@ open class Menu @JvmOverloads constructor(
     val items: Map<Int, MenuItem>,
     var size: Int = 0,
     val animations: List<MenuAnimation>,
-    interactionsBlocked: Boolean = true,
+    val interactionsBlocked: Boolean = true,
     private val onClickHandler: (InventoryClickEvent) -> Unit = {},
     private val onCloseHandler: (InventoryCloseEvent) -> Unit = {}
 ): InventoryHolder {
@@ -51,7 +51,7 @@ open class Menu @JvmOverloads constructor(
             if (!sortedAnimations.containsKey(animation.interval)) sortedAnimations[animation.interval] = LinkedList()
             sortedAnimations[animation.interval]!!.add(animation)
         }
-        // This is the interval we will use as the lowest possible interval to cover all animation intverals
+        // This is the interval we will use as the lowest possible interval to cover all animation intervals
         animationInterval = NumberUtil.gcd(sortedAnimations.keys).toLong()
     }
 

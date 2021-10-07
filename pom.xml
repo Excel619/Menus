@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>Menus</artifactId>
-    <groupId>com.gmail.excel8392</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.gmail.excel8392.menus</groupId>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Menus</name>
@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.5.10</kotlin.version>
+        <kotlin.version>1.5.31</kotlin.version>
         <fileOutput>${project.basedir}/../lib</fileOutput>
     </properties>
 
@@ -102,14 +102,23 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>2.10.4</version>
+                <configuration>
+                    <groups>
+                        <group>
+                            <title>test</title>
+                            <packages>src.main.kotlin.com.gmail.excel8392.menus.*</packages>
+                        </group>
+                    </groups>
+                    <sourcepath>src/main/kotlin</sourcepath>
+                    <doclet>com.gmail.excel8392.menus</doclet>
+                    <docletArtifact>
+                        <groupId>com.gmail.excel8392.menus</groupId>
+                        <artifactId>Menus</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                    </docletArtifact>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+                </configuration>
             </plugin>
         </plugins>
         <resources>

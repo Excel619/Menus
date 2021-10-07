@@ -13,7 +13,7 @@ interface Action {
     /**
      * Handles this action executing upon the click of a MenuItem icon in a Menu.
      * Any changes made to the InventoryClickEvent parameter will be applied to the bukkit event.
-     * @param event - The bukkit event that is calling for the execute of this action
+     * @param event The bukkit event that is calling for the execute of this action
      */
     fun execute(event: InventoryClickEvent)
 

@@ -21,6 +21,17 @@ class MenuItemBuilder @JvmOverloads constructor(
     private var meta: ItemMeta? = item.itemMeta
     private var interactionsBlocked: Boolean? = null
 
+    @JvmOverloads
+    constructor(material: Material, amount: Int, name: String, colorPrefix: Char = '&'): this(material, amount, colorPrefix = colorPrefix) {
+        setName(name)
+    }
+
+    @JvmOverloads
+    constructor(material: Material, amount: Int, name: String, vararg lore: String, colorPrefix: Char = '&'): this(material, amount, colorPrefix = colorPrefix) {
+        setName(name)
+        setLore(*lore)
+    }
+
     fun setName(name: String): MenuItemBuilder {
         meta ?: throw IllegalStateException("Cannot set name for item with null meta!")
         meta!!.setDisplayName(ChatColor.translateAlternateColorCodes(colorPrefix, name))

@@ -45,9 +45,11 @@ class ChangePageAction(val type: Type): Action {
 
         /** Turn to the next page in the menu, or current page if this is the last page */
         NEXT_PAGE,
-        /**  */
+        /** Turn to the previous page in the menu, or current page if this is the last page */
         PREVIOUS_PAGE,
+        /** Turn to the first page in the menu */
         FIRST_PAGE,
+        /** Turn to the last page in the menu */
         LAST_PAGE;
 
     }

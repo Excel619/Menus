@@ -1,5 +1,6 @@
 package com.gmail.excel8392.menus.action
 
+import com.gmail.excel8392.menus.menu.Menu
 import org.bukkit.event.inventory.InventoryClickEvent
 
 /**
@@ -11,7 +12,15 @@ import org.bukkit.event.inventory.InventoryClickEvent
  */
 class CloseMenuAction: Action {
 
-    /** {@inheritDoc} */
-    override fun execute(event: InventoryClickEvent) = event.whoClicked.closeInventory()
+    /** Handles this action executing upon the click of a MenuItem icon in a Menu.
+     * Any changes made to the InventoryClickEvent parameter will be applied to the bukkit event.
+     *
+     * This closes the current open menu the player is viewing. If it is not a menu, it does nothing.
+     *
+     * @param event The bukkit event that is calling for the execute of this action
+     */
+    override fun execute(event: InventoryClickEvent) {
+        if (event.inventory.holder is Menu) event.whoClicked.closeInventory()
+    }
 
 }

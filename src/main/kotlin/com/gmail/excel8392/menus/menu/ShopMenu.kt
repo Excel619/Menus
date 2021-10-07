@@ -4,7 +4,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.plugin.Plugin
 
-class ShopMenu @JvmOverloads constructor(
+/*class ShopMenu @JvmOverloads constructor(
     plugin: Plugin,
     title: String,
     items: Map<Int, MenuItem>,
@@ -22,4 +22,4 @@ class ShopMenu @JvmOverloads constructor(
     onClose
 ) {
 
-}
+}*/
