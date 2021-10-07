@@ -1,7 +1,7 @@
 package com.gmail.excel8392.menus.util
 
 import com.gmail.excel8392.menus.menu.MenuItem
-import com.gmail.excel8392.menus.menu.MenuPageItems
+import com.gmail.excel8392.menus.menu.PagedMenu
 import kotlin.math.ceil
 import kotlin.math.max
 
@@ -41,9 +41,9 @@ internal object MenuUtil {
      *
      * @return First page with at least one empty slot
      */
-    internal fun getFirstEmptyPage(pages: MutableList<MenuPageItems>, newPageDefaultSize: Int): MenuPageItems {
+    internal fun getFirstEmptyPage(pages: MutableList<PagedMenu.PageItems>, newPageDefaultSize: Int): PagedMenu.PageItems {
         for (page in pages) if (!page.isFull()) return page
-        return MenuPageItems(newPageDefaultSize).also { pages.add(it) }
+        return PagedMenu.PageItems(newPageDefaultSize).also { pages.add(it) }
     }
 
     /**

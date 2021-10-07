@@ -13,9 +13,11 @@ import java.util.LinkedList
 class BasicMenuBuilder @JvmOverloads constructor(
     var plugin: Plugin,
     var title: String,
-    var size: Int,
+    override var size: Int,
     private var colorPrefix: Char = '&'
 ): MenuBuilder {
+
+    // TODO override default interface methods to return this class type
 
     private var items: MutableMap<Int, MenuItem> = HashMap()
     private var animations: MutableList<MenuAnimation> = LinkedList<MenuAnimation>()

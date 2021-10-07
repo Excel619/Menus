@@ -13,7 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
  *
  * @param menuSupplier Lambda supplier for the menu to open
  */
-class OpenMenuAction(private val menuSupplier: (InventoryClickEvent) -> Menu): Action {
+class OpenMenuAction(private val menuSupplier: (InventoryClickEvent) -> Menu): MenuAction {
 
     /**
      * Construct this action using an already constructed menu.
@@ -45,7 +45,7 @@ class OpenMenuAction(private val menuSupplier: (InventoryClickEvent) -> Menu): A
      *
      * @param event The bukkit event that is calling for the execute of this action
      */
-    override fun execute(event: InventoryClickEvent) {
+    override fun execute(event: InventoryClickEvent, menu: Menu) {
         if (event.whoClicked !is Player) return
         event.whoClicked.openInventory(menuSupplier(event).inventory)
     }

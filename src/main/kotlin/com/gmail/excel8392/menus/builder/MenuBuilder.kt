@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack
  */
 interface MenuBuilder: Cloneable {
 
+    val size: Int
+
     /**
      * Set an item with a specific slot and MenuItem.
      *
@@ -75,10 +77,26 @@ interface MenuBuilder: Cloneable {
 
     fun setOnClick(onClick: (InventoryClickEvent) -> Unit): MenuBuilder
 
+    enum class MenuBuilderBorder {
+        TOP, BOTTOM, LEFT, RIGHT
+    }
+
+    fun addBorder(borderItem: ItemStack, vararg borders: MenuBuilderBorder) {
+        for (borderSide in borders) {
+            when (borderSide) {
+                // TODO needs updating when dropper menus exist
+                MenuBuilderBorder.TOP -> for (i in 0 until 9) setItem(i, borderItem)
+                MenuBuilderBorder.BOTTOM -> for (i in 0 until 9) setItem(size - i - 1, borderItem)
+                MenuBuilderBorder.LEFT -> for (i in 0 until size step 9) setItem(i, borderItem)
+                MenuBuilderBorder.RIGHT -> for (i in 0 until size step 9) setItem(i + 8, borderItem)
+            }
+        }
+    }
+
+    fun addBorder(borderItem: ItemStack) = addBorder(borderItem, *MenuBuilderBorder.values())
+
     fun build(): Menu
 
     override fun clone(): MenuBuilder
-
-    // TODO fun border
 
 }
