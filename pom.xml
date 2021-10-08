@@ -40,12 +40,19 @@
                 <executions>
                     <execution>
                         <id>compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
+                        <goals> <goal>compile</goal> </goals>
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <goals> <goal>test-compile</goal> </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
@@ -55,7 +62,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -63,6 +70,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
@@ -70,6 +78,7 @@
                                     <include>org.jetbrains.kotlin:kotlin-stdlib</include>
                                     <include>org.jetbrains.kotlin:kotlin-stdlib-common</include>
                                     <include>org.jetbrains:annotations</include>
+                                    <include>org.jetbrains.kotlin:kotlin-reflect</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
@@ -98,27 +107,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <configuration>
-                    <groups>
-                        <group>
-                            <title>test</title>
-                            <packages>src.main.kotlin.com.gmail.excel8392.menus.*</packages>
-                        </group>
-                    </groups>
-                    <sourcepath>src/main/kotlin</sourcepath>
-                    <doclet>com.gmail.excel8392.menus</doclet>
-                    <docletArtifact>
-                        <groupId>com.gmail.excel8392.menus</groupId>
-                        <artifactId>Menus</artifactId>
-                        <version>1.0-SNAPSHOT</version>
-                    </docletArtifact>
-                    <useStandardDocletOptions>true</useStandardDocletOptions>
-                </configuration>
             </plugin>
         </plugins>
         <resources>

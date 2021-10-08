@@ -27,8 +27,8 @@ open class MenuItem @JvmOverloads constructor(
         actions.add(action)
     }
 
-    fun onClick(event: InventoryClickEvent) {
-        for (action in actions) action.execute(event)
+    fun onClick(event: InventoryClickEvent, menu: Menu) {
+        for (action in actions) action.execute(event, menu)
     }
 
     fun applyDefaultInteractionsBlocked(defaultInteractionsBlocked: Boolean) {

@@ -3,12 +3,11 @@ package com.gmail.excel8392.menus.menu
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class TakeItemsShopTransaction @JvmOverloads constructor(
+class TakeItemsShopTransaction constructor(
     vararg val items: Pair<ItemStack, Int>
 ): ShopTransaction {
 
     override fun applyTransaction(viewer: Player, menu: Menu): Boolean {
-        val success = true
         for (pair in items) {
             val item = pair.first
             val amount = pair.second
@@ -27,7 +26,6 @@ class TakeItemsShopTransaction @JvmOverloads constructor(
                 }
             }
             if (leftToRemove > 0) {
-                val clone = item.clone()
                 var leftToAdd = amount - leftToRemove
                 while (leftToAdd > 0) {
                     viewer.inventory.addItem(item.clone().also {

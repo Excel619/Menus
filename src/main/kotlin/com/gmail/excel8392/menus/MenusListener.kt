@@ -34,7 +34,7 @@ class MenusListener(val plugin: Plugin): Listener {
         event.isCancelled = clickedMenuItem.interactionsBlocked
 
         // Fire the on click event for the menu item
-        clickedMenuItem.onClick(event)
+        clickedMenuItem.onClick(event, menu)
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
