@@ -1,5 +1,6 @@
 package com.gmail.excel8392.menus.builder
 
+import com.gmail.excel8392.menus.MenusAPI
 import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.menu.MenuItem
 import com.gmail.excel8392.menus.menu.PagedMenu
@@ -8,15 +9,14 @@ import org.bukkit.ChatColor
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
 import java.util.LinkedList
 
 class PagedMenuBuilder @JvmOverloads constructor(
-    var plugin: Plugin,
+    var menusAPI: MenusAPI,
     var title: String,
     val defaultSize: Int,
     private var colorPrefix: Char = '&'
-): MenuBuilder {
+): MenuBuilder<PagedMenuBuilder> {
 
     override var size = defaultSize
 
@@ -29,14 +29,14 @@ class PagedMenuBuilder @JvmOverloads constructor(
     private var onClick: (InventoryClickEvent) -> Unit = {}
 
     @JvmOverloads
-    constructor(plugin: Plugin, defaultSize: Int, colorPrefix: Char = '&'): this(plugin, "", defaultSize, colorPrefix = colorPrefix)
+    constructor(menusAPI: MenusAPI, defaultSize: Int, colorPrefix: Char = '&'): this(menusAPI, "", defaultSize, colorPrefix = colorPrefix)
 
-    override fun setItem(slot: Int, menuItem: MenuItem): MenuBuilder {
+    override fun setItem(slot: Int, menuItem: MenuItem): PagedMenuBuilder {
         setStaticItem(slot, menuItem)
         return this
     }
 
-    override fun addItem(menuItem: MenuItem): MenuBuilder {
+    override fun addItem(menuItem: MenuItem): PagedMenuBuilder {
         setStaticItem(MenuUtil.getFirstEmptySlot(pages[0].items, pages[0].size), menuItem)
         return this
     }
@@ -119,13 +119,14 @@ class PagedMenuBuilder @JvmOverloads constructor(
         }
     }
 
-    override fun addBorder(borderItem: ItemStack, vararg borders: MenuBuilder.MenuBuilderBorder) {
+    override fun addBorder(borderItem: ItemStack, vararg borders: MenuBuilder.MenuBuilderBorder): PagedMenuBuilder {
         // TODO change to work on all pages
         super.addBorder(borderItem, *borders)
+        return this
     }
 
     override fun build() = PagedMenu(
-        plugin,
+        menusAPI,
         ChatColor.translateAlternateColorCodes(colorPrefix, title),
         pages,
         animations,
@@ -141,7 +142,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
             for ((slot, item) in page.items) pageItems[slot] = item
             newPages.add(PagedMenu.PageItems(pageItems, page.size))
         }
-        return PagedMenuBuilder(plugin, title, defaultSize, colorPrefix = colorPrefix)
+        return PagedMenuBuilder(menusAPI, title, defaultSize, colorPrefix = colorPrefix)
             .setPages(newPages)
             .setAnimations(animations)
             .setInteractionsBlocked(interactionsBlocked)

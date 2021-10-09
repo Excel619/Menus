@@ -7,9 +7,8 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.plugin.Plugin
 
-class MenusListener(val plugin: Plugin): Listener {
+class MenusListener(val menusAPI: MenusAPI): Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     fun onInventoryClick(event: InventoryClickEvent) {
@@ -18,7 +17,7 @@ class MenusListener(val plugin: Plugin): Listener {
         // Ensure that this menu is to be handled by the plugin that registered this Menus API.
         // This is significant because multiple Menus APIs can be created by different plugins,
         // and without this check each menu click would be handled several times.
-        if (menu.plugin != plugin) return
+        if (menu.menusAPI.plugin != menusAPI.plugin) return
         // Ensure that the slot clicked is not empty
         if (event.currentItem?.type ?: return == Material.AIR) {
             event.isCancelled = menu.interactionsBlocked
@@ -44,7 +43,7 @@ class MenusListener(val plugin: Plugin): Listener {
         // Ensure that this menu is to be handled by the plugin that registered this Menus API.
         // This is significant because multiple Menus APIs can be created by different plugins,
         // and without this check each menu click would be handled several times.
-        if (menu.plugin != plugin) return
+        if (menu.menusAPI.plugin != menusAPI.plugin) return
 
         // Fire the on close event for the menu
         menu.onClose(event)

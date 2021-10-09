@@ -11,16 +11,36 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.ItemMeta
 
-class MenuItemBuilder @JvmOverloads constructor(
+/**
+ * Builder pattern class allowing you to construct a MenuItem.
+ *
+ * @constructor Create a MenuItem icon from a material and an amount.
+ *
+ * @param material The material of the icon for this MenuItem
+ * @param amount The amount of the item icon for this MenuItem
+ * @property colorPrefix Color code prefix for translating alternate color codes
+ */
+open class MenuItemBuilder @JvmOverloads constructor(
     material: Material,
     amount: Int = 1,
     private val colorPrefix: Char = '&'
 ): Cloneable {
 
+    /** The item stack used to represent this icon */
     private var item: ItemStack = ItemStack(material, amount)
+    /** The item meta applied to the item on build */
     private var meta: ItemMeta? = item.itemMeta
+    /** Determines if item is movable in inventory, null means it will take the menu default */
     private var interactionsBlocked: Boolean? = null
 
+    /**
+     * Create a MenuItem icon from a material, amount and custom display name.
+     *
+     * @param material The material of the icon for this MenuItem
+     * @param amount The amount of the item icon for this MenuItem
+     * @param name The custom display name of the item icon for this MenuItem (supports color codes)
+     * @param
+     */
     @JvmOverloads
     constructor(material: Material, amount: Int, name: String, colorPrefix: Char = '&'): this(material, amount, colorPrefix = colorPrefix) {
         setName(name)

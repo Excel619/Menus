@@ -1,5 +1,6 @@
 package com.gmail.excel8392.menus.menu
 
+import com.gmail.excel8392.menus.MenusAPI
 import com.gmail.excel8392.menus.PagedMenusManager
 import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.util.MenuUtil
@@ -8,7 +9,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
-import org.bukkit.plugin.Plugin
 
 /**
  * TODO
@@ -17,15 +17,15 @@ import org.bukkit.plugin.Plugin
  * Menu#items and Menu#inventory will contain the first page of this menu.
  */
 class PagedMenu @JvmOverloads constructor(
-    plugin: Plugin,
+    menusAPI: MenusAPI,
     title: String,
     val pageItems: List<PageItems>,
     animations: List<MenuAnimation>,
     interactionsBlocked: Boolean = true,
     onClick: (InventoryClickEvent) -> Unit = {},
     onClose: (InventoryCloseEvent) -> Unit = {}
-) : Menu(
-    plugin,
+): Menu(
+    menusAPI,
     title,
     pageItems.firstOrNull()?.items ?: throw IllegalArgumentException("PagedMenu must have at least one page!"),
     pageItems.firstOrNull()?.size ?: throw IllegalArgumentException("PagedMenu must have at least one page!"),
@@ -34,6 +34,8 @@ class PagedMenu @JvmOverloads constructor(
     onClick,
     onClose
 ) {
+
+    // TODO make it so that this class handles page turning, rather than PagedMenusManager
 
     private var pages = ArrayList<Inventory>(pageItems.size)
 
