@@ -13,5 +13,13 @@ bin/
 log/
 target/
 
+# Gradle
+.gradle/
+gradle/
+build/
+gradlew
+gradlew.bat
+
+
 # Project Dependencies
 lib/
