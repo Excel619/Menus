@@ -18,31 +18,33 @@ import java.util.UUID
 open class Menu @JvmOverloads constructor(
     val menusAPI: MenusAPI,
     var title: String,
-    val items: Map<Int, MenuItem>,
+    private val items: Map<Int, MenuItem>,
     var size: Int = 0,
     val animations: List<MenuAnimation>,
     val interactionsBlocked: Boolean = true,
-    private val onClickHandler: (InventoryClickEvent) -> Unit = {},
-    private val onCloseHandler: (InventoryCloseEvent) -> Unit = {}
+    protected val onClickHandler: (InventoryClickEvent) -> Unit = {},
+    protected val onCloseHandler: (InventoryCloseEvent) -> Unit = {}
 ): InventoryHolder {
 
     // It should be noted that we are leaking "this" in the Bukkit.createInventory,
     // but this is of no concern because it does not use the InventoryHolder
-    private var inventory: Inventory =
+    protected var inventory: Inventory =
         if (title.isEmpty() || title.isBlank()) Bukkit.createInventory(this, size)
         else Bukkit.createInventory(this, size, title)
+    @JvmName("getRawInventory") get // This is to avoid declaration clash with interface method
 
-    private val sortedAnimations = HashMap<Int, MutableList<MenuAnimation>>()
-    private val animationInterval: Long
+    protected val sortedAnimations = HashMap<Int, MutableList<MenuAnimation>>()
+    protected val animationInterval: Long
 
-    private val runningAnimations = HashMap<UUID, RunningAnimations>()
+    internal val runningAnimations = HashMap<UUID, RunningAnimations>()
 
     init {
         // Set size to a valid inventory size (between 0-54, multiple of 9)
         if (size !in 1..54 || size % 9 != 0) size = MenuUtil.getMinSlots(items.keys)
         if (items.size > 54 || items.size > size) throw IllegalArgumentException("Menu cannot have more items than determined GUI size!")
 
-        fillInventory() // Check warning for fillInventory
+        // Fill the inventory
+        for ((slot, item) in items) inventory.setItem(slot, item.icon)
         // For all of the menu items in the inventory that don't have interactionsBlocked set, apply this menu's default
         MenuUtil.applyDefaultInteractionsBlocked(items, interactionsBlocked)
 
@@ -63,22 +65,16 @@ open class Menu @JvmOverloads constructor(
     @Warning(reason = "Do not use for opening this menu")
     override fun getInventory() = inventory
 
+    open fun getMenuItem(slot: Int): MenuItem {
+        if (!containsMenuItem(slot)) throw IllegalArgumentException("Menu does not contain item at slot $slot! Use containsMenuItem to check first.")
+        return items[slot]!!
+    }
+
+    open fun containsMenuItem(slot: Int) = items.containsKey(slot)
+
     open fun openMenu(player: Player) {
         player.openInventory(inventory)
         beginAnimation(player)
-    }
-
-    /**
-     * Fills up Menu#inventory with items defined in constructor.
-     *
-     * Implementation Specification: <b>This is a dangerous function to overwrite!</b>
-     * This is called in the init block of this class, so when overridden it
-     * will be called when the derived class <b>has not yet been constructed!</b>
-     * Overwritten function should not include any references to non-constructor instance data or
-     * require the execution of the init block first.
-     */
-    protected open fun fillInventory() {
-        for ((slot, item) in items) inventory.setItem(slot, item.icon)
     }
 
     protected open fun beginAnimation(player: Player) {
@@ -89,11 +85,23 @@ open class Menu @JvmOverloads constructor(
     }
 
     open fun onClick(event: InventoryClickEvent) {
+        // Run the on click handler
         onClickHandler(event)
+
+        // Check to see if there is a menu item in this slot
+        if (!containsMenuItem(event.slot)) return
+
+        // Get the MenuItem clicked and execute actions, apply interactions blocked
+        val clickedMenuItem = getMenuItem(event.slot)
+        event.isCancelled = clickedMenuItem.interactionsBlocked
+        // Fire the on click event for the menu item
+        clickedMenuItem.onClick(event, this)
     }
 
     open fun onClose(event: InventoryCloseEvent) {
+        // Run the on close handler
         onCloseHandler(event)
+        // Stop any running animations for this player
         if (runningAnimations.containsKey(event.player.uniqueId)) runningAnimations[event.player.uniqueId]!!.stop()
         runningAnimations.remove(event.player.uniqueId)
     }

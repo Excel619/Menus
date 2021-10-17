@@ -1,9 +1,10 @@
 package com.gmail.excel8392.menus.menu
 
 import com.gmail.excel8392.menus.MenusAPI
-import com.gmail.excel8392.menus.PagedMenusManager
 import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.util.MenuUtil
+import java.lang.IllegalStateException
+import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -19,7 +20,7 @@ import org.bukkit.inventory.Inventory
 class PagedMenu @JvmOverloads constructor(
     menusAPI: MenusAPI,
     title: String,
-    val pageItems: List<PageItems>,
+    private val pageItems: List<PageItems>,
     animations: List<MenuAnimation>,
     interactionsBlocked: Boolean = true,
     onClick: (InventoryClickEvent) -> Unit = {},
@@ -35,9 +36,8 @@ class PagedMenu @JvmOverloads constructor(
     onClose
 ) {
 
-    // TODO make it so that this class handles page turning, rather than PagedMenusManager
-
-    private var pages = ArrayList<Inventory>(pageItems.size)
+    private var pages = ArrayList<Inventory>()
+    private val viewers = HashMap<UUID, Int>()
 
     init {
         // If we have only one page, then the Menu init block will
@@ -46,16 +46,12 @@ class PagedMenu @JvmOverloads constructor(
         if (pageItems.size > 1) for (pageNumber in 1 until pageItems.size) {
             MenuUtil.applyDefaultInteractionsBlocked(pageItems[pageNumber].items, interactionsBlocked)
         }
-    }
 
-    override fun fillInventory() {
-        // Use the super method to fill in the Menu#inventory with Menu#items
-        super.fillInventory()
         // Since Menu#inventory represents this PagedMenu's first page, add it to our pages
         pages.add(inventory)
         // Start from index one because super.fillInventory() filled the first page
         if (pageItems.size > 1) for (pageNumber in 1 until pageItems.size) {
-            // Receive
+            // Get page items for the current page
             val currentPage = pageItems[pageNumber]
             // Create an inventory using the static size for all pages in the menu
             val pageInventory =
@@ -83,18 +79,64 @@ class PagedMenu @JvmOverloads constructor(
         return pages[page]
     }
 
+    fun getMenuItem(slot: Int, page: Int): MenuItem {
+        if (!containsMenuItem(slot)) throw IllegalArgumentException("Menu does not contain item at slot $slot! Use containsMenuItem to check first.")
+        return pageItems[page].items[slot]!!
+    }
+
+    fun containsMenuItem(slot: Int, page: Int): Boolean {
+        if (page !in pageItems.indices) return false
+        return pageItems[page].items.containsKey(slot)
+    }
+
     override fun openMenu(player: Player) {
-        PagedMenusManager.openPagedMenu(player, this)
+        openMenuPage(player, 0)
     }
 
     fun openMenuPage(player: Player, page: Int) {
         if (!isValidPage(page)) throw IllegalArgumentException("Page $page does not exist in this menu!")
-        PagedMenusManager.openPagedMenu(player, this, page)
+        player.openInventory(getInventoryPage(page))
+        viewers[player.uniqueId] = page
     }
 
     fun isValidPage(page: Int) = page in 0 until pages.size
 
     fun size() = pages.size
+
+    override fun onClick(event: InventoryClickEvent) {
+        // Run the on click handler
+        onClickHandler(event)
+
+        // Get the page we are viewing, if not viewing return
+        val page = viewers[event.whoClicked.uniqueId] ?: return
+        // Check that there is a menu item in the slot
+        if (!containsMenuItem(event.slot, page)) return
+
+        // Get the MenuItem clicked and execute actions, apply interactions blocked
+        val clickedMenuItem = getMenuItem(event.slot, page)
+        event.isCancelled = clickedMenuItem.interactionsBlocked
+        // Fire the on click event for the menu item
+        clickedMenuItem.onClick(event, this)
+    }
+
+    override fun onClose(event: InventoryCloseEvent) {
+        super.onClose(event)
+        viewers.remove(event.player.uniqueId)
+    }
+
+    fun openNextPage(player: Player) {
+        if (!viewers.containsKey(player.uniqueId)) throw IllegalStateException("Cannot open next page for PagedMenu if player is not viewing this menu!")
+        val currentPage = viewers[player.uniqueId]!!
+        val nextPage = if (isValidPage(currentPage + 1)) currentPage + 1 else currentPage
+        openMenuPage(player, nextPage)
+    }
+
+    fun openPreviousPage(player: Player) {
+        if (!viewers.containsKey(player.uniqueId)) throw IllegalStateException("Cannot open next page for PagedMenu if player is not viewing this menu!")
+        val currentPage = viewers[player.uniqueId]!!
+        val previousPage = if (isValidPage(currentPage - 1)) currentPage - 1 else currentPage
+        openMenuPage(player, previousPage)
+    }
 
 
     class PageItems(items: MutableMap<Int, MenuItem>, size: Int) {

@@ -7,6 +7,8 @@ import org.bukkit.event.inventory.InventoryClickEvent
  * Action for MenuItems that closes the menu the player is viewing upon execute.
  * Actions are fired on menu item click.
  *
+ * @constructor Construct a ChangePageAction with a given Type
+ *
  * @see com.gmail.excel8392.menus.action.MenuAction
  * @see com.gmail.excel8392.menus.menu.MenuItem
  */

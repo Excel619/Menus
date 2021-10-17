@@ -40,7 +40,9 @@
                 <executions>
                     <execution>
                         <id>compile</id>
-                        <goals> <goal>compile</goal> </goals>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
@@ -73,13 +75,19 @@
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
-                                <includes>
-                                    <!-- Kotlin -->
-                                    <include>org.jetbrains.kotlin:kotlin-stdlib</include>
-                                    <include>org.jetbrains.kotlin:kotlin-stdlib-common</include>
-                                    <include>org.jetbrains:annotations</include>
-                                    <include>org.jetbrains.kotlin:kotlin-reflect</include>
-                                </includes>
+                                                                <excludes>
+                                                                    <exclude>org.jetbrains.kotlin:kotlin-stdlib</exclude>
+                                                                    <exclude>org.jetbrains.kotlin:kotlin-stdlib-common</exclude>
+                                                                    <exclude>org.jetbrains:annotations</exclude>
+                                                                    <exclude>org.jetbrains.kotlin:kotlin-reflect</exclude>
+                                                                </excludes>
+<!--                                <includes>-->
+<!--                                    &lt;!&ndash; Kotlin &ndash;&gt;-->
+<!--                                    <include>org.jetbrains.kotlin:kotlin-stdlib</include>-->
+<!--                                    <include>org.jetbrains.kotlin:kotlin-stdlib-common</include>-->
+<!--                                    <include>org.jetbrains:annotations</include>-->
+<!--                                    <include>org.jetbrains.kotlin:kotlin-reflect</include>-->
+<!--                                </includes>-->
                             </artifactSet>
                         </configuration>
                     </execution>
@@ -150,14 +158,6 @@
             <artifactId>spigot-api</artifactId>
             <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- CraftBukkit NMS -->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.17.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../lib/craftbukkit-1.17.1.jar</systemPath>
         </dependency>
     </dependencies>
 

@@ -11,7 +11,6 @@ enum class MyMenuType(val menuBuilder: BasicMenuBuilder): MenuType {
 
     PLAYER_STATISTICS(
         BasicMenuBuilder(TODO(), 27)
-            .addani
             .setItem(4, MenuItemBuilder(Material.OAK_SIGN)
                 .setName("Stats")
                 .build())) {

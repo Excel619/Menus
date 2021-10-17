@@ -9,17 +9,12 @@ class Menus(override val plugin: Plugin): MenusAPI {
 
     companion object {
         private val menusAPIs = HashMap<Plugin, Menus>()
-        private var pagedMenusManagerRegistered = false
     }
 
     init {
         if (menusAPIs.containsKey(plugin)) throw IllegalArgumentException("A MenusAPI has already been created for plugin \"${plugin.name}\"!")
         menusAPIs[plugin] = this
         Bukkit.getPluginManager().registerEvents(MenusListener(this), plugin)
-        if (!pagedMenusManagerRegistered) {
-            Bukkit.getPluginManager().registerEvents(PagedMenusManager, plugin)
-            pagedMenusManagerRegistered = true
-        }
     }
 
     override fun openMenu(player: Player, menu: Menu) {

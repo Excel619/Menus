@@ -95,7 +95,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
     }
 
     @JvmOverloads
-    fun addPage(amount: Int = 1, size: Int = defaultSize) {
+    fun addPage(amount: Int = 1, size: Int = defaultSize): PagedMenuBuilder {
         val initialSize = pages.size
         repeat(amount) {
             val pageItems = PagedMenu.PageItems(defaultSize)
@@ -107,9 +107,10 @@ class PagedMenuBuilder @JvmOverloads constructor(
             if (pages.size == 0) this.size = size
             pages.add(pageItems)
         }
+        return this
     }
 
-    fun setMenuLength(length: Int) {
+    fun setMenuLength(length: Int): PagedMenuBuilder {
         if (length > pages.size) {
             addPage(amount = length - pages.size)
         } else if (length < pages.size) {
@@ -117,6 +118,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
                 pages.removeLast()
             }
         }
+        return this
     }
 
     override fun addBorder(borderItem: ItemStack, vararg borders: MenuBuilder.MenuBuilderBorder): PagedMenuBuilder {

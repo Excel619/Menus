@@ -1,5 +1,6 @@
 package com.gmail.excel8392.menus.builder
 
+import com.gmail.excel8392.menus.action.MenuAction
 import com.gmail.excel8392.menus.menu.MenuItem
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -33,6 +34,8 @@ open class MenuItemBuilder @JvmOverloads constructor(
     /** Determines if item is movable in inventory, null means it will take the menu default */
     private var interactionsBlocked: Boolean? = null
 
+    private var actions = HashSet<MenuAction>()
+
     /**
      * Create a MenuItem icon from a material, amount and custom display name.
      *
@@ -52,9 +55,14 @@ open class MenuItemBuilder @JvmOverloads constructor(
         setLore(*lore)
     }
 
+    fun addActions(vararg actions: MenuAction): MenuItemBuilder {
+        for (action in actions) this.actions.add(action)
+        return this
+    }
+
     fun setName(name: String): MenuItemBuilder {
         meta ?: throw IllegalStateException("Cannot set name for item with null meta!")
-        meta!!.setDisplayName(ChatColor.translateAlternateColorCodes(colorPrefix, name))
+        meta!!.setDisplayName(ChatColor.translateAlternateColorCodes(colorPrefix, if (name.isNotEmpty()) name else " "))
         return this
     }
 
@@ -147,7 +155,9 @@ open class MenuItemBuilder @JvmOverloads constructor(
 
     fun build(): MenuItem {
         item.itemMeta = meta
-        return MenuItem(item, interactionsBlocked = interactionsBlocked)
+        val menuItem = MenuItem(item, interactionsBlocked = interactionsBlocked)
+        for (action in actions) menuItem.addAction(action)
+        return menuItem
     }
 
     override fun clone(): MenuItemBuilder {
