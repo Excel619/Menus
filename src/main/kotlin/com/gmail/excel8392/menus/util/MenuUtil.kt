@@ -17,7 +17,7 @@ internal object MenuUtil {
      * @param slots Set of slot numbers, obviously can't contain duplicates
      */
     internal fun getMinSlots(slots: Set<Int>): Int {
-        val lastSlot = slots.stream().mapToInt{it}.max().orElse(9)
+        val lastSlot = slots.stream().mapToInt { it }.max().orElse(9)
         if (slots.size > 54 || lastSlot >= 54) throw IllegalArgumentException("Inventory slots must be between 0 and 53!")
         val minSlots = ceil(lastSlot / 9.0).toInt() * 9
         return max(minSlots, 9)

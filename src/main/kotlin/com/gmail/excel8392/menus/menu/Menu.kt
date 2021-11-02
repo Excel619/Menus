@@ -15,6 +15,21 @@ import org.bukkit.scheduler.BukkitTask
 import java.util.LinkedList
 import java.util.UUID
 
+/**
+ * Represents a menu that is created and handles logic for GUI elements and player interaction.
+ * To open the menu, use openMenu(Player).
+ *
+ * @constructor Create a populated Menu
+ *
+ * @property menusAPI The owning MenusAPI object constructed for the plugin using this API
+ * @property title The title of this menu
+ * @property items This items this menu contains, mapping between slots and an ItemStack wrapper, MenuItem
+ * @property size The inventory size for this menu, size must be between 9 and 54 and be a multiple of 9
+ * @property animations List of menu animations to run when a player opens this menu
+ * @property interactionsBlocked Default value deciding if to allow players to move items in the inventory. Can be overwritten by MenuItems.
+ * @property onClickHandler Lambda that runs on click anywhere in the GUI for any player
+ * @property onCloseHandler Lambda that runs on menu close for any player
+ */
 open class Menu @JvmOverloads constructor(
     val menusAPI: MenusAPI,
     var title: String,
@@ -28,14 +43,18 @@ open class Menu @JvmOverloads constructor(
 
     // It should be noted that we are leaking "this" in the Bukkit.createInventory,
     // but this is of no concern because it does not use the InventoryHolder
+    /** The GUI backing this menu, containing all of its items */
     protected var inventory: Inventory =
         if (title.isEmpty() || title.isBlank()) Bukkit.createInventory(this, size)
         else Bukkit.createInventory(this, size, title)
     @JvmName("getRawInventory") get // This is to avoid declaration clash with interface method
 
+    /** Animations for this menu sorted by interval length */
     protected val sortedAnimations = HashMap<Int, MutableList<MenuAnimation>>()
+    /** Largest common denominator between all of the animations, the single interval for all of them */
     protected val animationInterval: Long
 
+    /** Map between each player with the menu open and the menu animations running for them */
     internal val runningAnimations = HashMap<UUID, RunningAnimations>()
 
     init {
@@ -60,23 +79,46 @@ open class Menu @JvmOverloads constructor(
     /**
      * API note: WARNING - Do not use this to open a menu, instead use Menu#openMenu!
      *
-     * TODO
+     * Gets the inventory that backs this menu. This should be used for observation and no code should modify this inventory.
      */
     @Warning(reason = "Do not use for opening this menu")
     override fun getInventory() = inventory
 
+    /**
+     * Gets a MenuItem in this menu at a specific slot.
+     *
+     * @param slot MenuItem's slot
+     * @return MenuItem
+     */
     open fun getMenuItem(slot: Int): MenuItem {
         if (!containsMenuItem(slot)) throw IllegalArgumentException("Menu does not contain item at slot $slot! Use containsMenuItem to check first.")
         return items[slot]!!
     }
 
+    /**
+     * Checks if this menu contains a MenuItem at the given slot.
+     *
+     * @param slot MenuItem's slot
+     * @return Whether or not this menu contains an item at the specified slot
+     */
     open fun containsMenuItem(slot: Int) = items.containsKey(slot)
 
+    /**
+     * Opens this menu for a player.
+     * This will not only send packets to the player with the inventory but also handle certain things server side to keep the menu working.
+     *
+     * @param player Menu viewer
+     */
     open fun openMenu(player: Player) {
         player.openInventory(inventory)
         beginAnimation(player)
     }
 
+    /**
+     * Begins the menu animations for this menu with a certain viewer.
+     *
+     * @param player Menu viewer
+     */
     protected open fun beginAnimation(player: Player) {
         Bukkit.getScheduler().runTaskTimer(menusAPI.plugin, Runnable {
             runningAnimations[player.uniqueId] = RunningAnimations(player)
@@ -84,6 +126,11 @@ open class Menu @JvmOverloads constructor(
         }, 0L, animationInterval)
     }
 
+    /**
+     * Logic that executes on menu item click.
+     *
+     * @param event Bukkit event wrapper for item click
+     */
     open fun onClick(event: InventoryClickEvent) {
         // Run the on click handler
         onClickHandler(event)
@@ -98,6 +145,11 @@ open class Menu @JvmOverloads constructor(
         clickedMenuItem.onClick(event, this)
     }
 
+    /**
+     * Logic that executes on menu close.
+     *
+     * @param event Bukkit event wrapper for inventory close
+     */
     open fun onClose(event: InventoryCloseEvent) {
         // Run the on close handler
         onCloseHandler(event)
@@ -106,19 +158,32 @@ open class Menu @JvmOverloads constructor(
         runningAnimations.remove(event.player.uniqueId)
     }
 
+    /**
+     * Wrapper for the menu animations currently running for a viewer of this menu.
+     * Each instance is dynamically tied to an instance of a menu.
+     * RunningAnimations objects become useless after they have been started and stopped for a viewer.
+     *
+     * @constructor Create empty Running animations
+     *
+     * @property player Menu Viewer
+     */
     internal inner class RunningAnimations(val player: Player) {
 
+        /** Counts up each animation's current interval, resets back to 0 on execute */
         private val intervalCounter = HashMap<MenuAnimation, Long>()
 
+        /** The bukkit task responsible for the animation ticking */
         private var task: BukkitTask? = null
+        /** Whether or not this animation has been run */
         private var hasRun = false
 
         init {
-            for (animation in animations) {
-                intervalCounter[animation] = 0
-            }
+            for (animation in animations) intervalCounter[animation] = 0
         }
 
+        /**
+         * Start the animations.
+         */
         fun start() {
             if (task != null || hasRun) throw IllegalStateException("Cannot start RunningAnimations because it has already been run before!")
             task = Bukkit.getScheduler().runTaskTimer(menusAPI.plugin, Runnable {
@@ -133,10 +198,13 @@ open class Menu @JvmOverloads constructor(
             hasRun = true
         }
 
+        /**
+         * Stop the animations.
+         */
         fun stop() {
             task ?: throw IllegalStateException("Cannot stop RunningAnimations because it has not been started!")
             if (!task!!.isCancelled) task!!.cancel()
-            task = null // Discard of the BukkitTask
+            task = null // Discard the BukkitTask
         }
 
     }

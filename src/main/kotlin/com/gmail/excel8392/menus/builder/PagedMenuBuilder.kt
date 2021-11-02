@@ -11,6 +11,22 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
 import java.util.LinkedList
 
+/**
+ * Implementation of the Menu Builder allowing for menus of multiple pages.
+ *
+ * Note that while it is required to provide a default size (for newly created pages),
+ * each page can be of different size.
+ *
+ * @constructor Create an empty paged menu builder
+ *
+ * @property menusAPI The owning MenusAPI object constructed for the plugin using this API
+ * @property title The title of the menu at the top (supports color codes)
+ * @property defaultSize The default size for new pages, size is between 9 and 54 and is a multiple of 9
+ * @property colorPrefix Color code prefix for translating alternate color codes
+ *
+ * @see com.gmail.excel8392.menus.builder.MenuBuilder
+ * @see com.gmail.excel8392.menus.menu.PagedMenu
+ */
 class PagedMenuBuilder @JvmOverloads constructor(
     var menusAPI: MenusAPI,
     var title: String,
@@ -20,14 +36,32 @@ class PagedMenuBuilder @JvmOverloads constructor(
 
     override var size = defaultSize
 
+    /** List of each page in the menu, with each page's items */
     var pages: MutableList<PagedMenu.PageItems> = ArrayList()
         private set
+
+    /**
+     * Map with entries specifying items that are "static" (identical) across all menu pages.
+     * The key represents an inventory slot, the entry is a pair of the menu item,
+     * and an array of page numbers to ignore, that should not contain the static item.
+     */
     private var staticItems = HashMap<Int, Pair<MenuItem, IntArray>>()
+    /** List of menu animations that will run for this menu */
     private var animations: MutableList<MenuAnimation> = LinkedList<MenuAnimation>()
+    /** The default menu value for blocking viewer interactions in the menu */
     private var interactionsBlocked = true
+    /** Lambda to run on menu close */
     private var onClose: (InventoryCloseEvent) -> Unit = {}
+    /** Lambda to run on click anywhere in the menu */
     private var onClick: (InventoryClickEvent) -> Unit = {}
 
+    /**
+     * Construct this PagedMenuBuilder with no title set.
+     *
+     * @param menusAPI The owning MenusAPI object constructed for the plugin using this API
+     * @param defaultSize The default size for new pages, size is between 9 and 54 and is a multiple of 9
+     * @param colorPrefix Color code prefix for translating alternate color codes
+     */
     @JvmOverloads
     constructor(menusAPI: MenusAPI, defaultSize: Int, colorPrefix: Char = '&'): this(menusAPI, "", defaultSize, colorPrefix = colorPrefix)
 
@@ -46,34 +80,87 @@ class PagedMenuBuilder @JvmOverloads constructor(
         return this
     }
 
+    /**
+     * Set the list of animations for this menu. Deletes all animations currently in the list.
+     *
+     * @param animations List of animations for this menu
+     * @return This builder for use in the builder pattern
+     */
     fun setAnimations(animations: MutableList<MenuAnimation>): PagedMenuBuilder {
         this.animations = animations
         return this
     }
 
+    /**
+     * Set an item with a specific page, slot, and MenuItem.
+     * This is unlike the default overloads for addItem as they set items across all pages.
+     * Will expand the menu if the page number provided does not yet exist.
+     *
+     * @param slot The slot to insert the icon at
+     * @param pageNumber The number of the page to insert the icon at
+     * @param menuItem The MenuItem to represent this slot
+     * @return This builder for use in the builder pattern
+     */
     fun setItem(slot: Int, pageNumber: Int, menuItem: MenuItem): PagedMenuBuilder {
         while (pageNumber >= pages.size) addPage()
         pages[pageNumber].setItem(slot, menuItem)
         return this
     }
 
+    /**
+     * Set an item with a specific page, slot, and ItemStack.
+     * This is unlike the default overloads for addItem as they set items across all pages.
+     * Will expand the menu if the page number provided does not yet exist.
+     * The ItemStack icon is immediately used to generate a MenuItem without any actions.
+     *
+     * @param slot The slot to insert the icon at
+     * @param pageNumber The number of the page to insert the icon at
+     * @param item The ItemStack icon to represent this slot
+     * @return This builder for use in the builder pattern
+     */
     fun setItem(slot: Int, pageNumber: Int, item: ItemStack): PagedMenuBuilder {
         setItem(slot, pageNumber, MenuItem(item))
         return this
     }
 
+    /**
+     * Set an item with a specific, slot, and MenuItem so that is identical across all pages.
+     * This will apply to all pages that are created in the future as well.
+     * Excluded pages don't need to exist yet, but on creation they will have the item not applied.
+     * The ItemStack icon is immediately used to generate a MenuItem without any actions.
+     *
+     * @param slot The slot to insert the icon at
+     * @param item The ItemStack icon to represent this slot
+     * @param excludePages Page number vararg of pages that should not have the item added.
+     * @return This builder for use in the builder pattern
+     */
     fun setStaticItem(slot: Int, item: MenuItem, vararg excludePages: Int = intArrayOf()): PagedMenuBuilder {
         staticItems[slot] = Pair(item, excludePages)
         for ((index, page) in pages.withIndex()) if (!excludePages.contains(index)) page.setItem(slot, item)
         return this
     }
 
+    /**
+     * Sets the inventory size for a page with a certain location in the menu.
+     * Pages can have different sizes than the default for this menu.
+     *
+     * @param pageNumber Number of the page to modify
+     * @param size New size of the menu, must be between 9 and 54 and be a multiple of 54
+     * @return This builder for use in the builder pattern
+     */
     fun setPageSize(pageNumber: Int, size: Int): PagedMenuBuilder {
         if (pageNumber !in 0 until pages.size) throw IllegalArgumentException("Invalid page size $pageNumber does not exist!")
         pages[pageNumber].size = size
         return this
     }
 
+    /**
+     * Sets the contents of all of the pages of this menu.
+     * This will immediately overwrite and delete the current pages in this builder.
+     *
+     * @param pages Mutable list of the new page items
+     * @return This builder for use in the builder pattern
+     */
     fun setPages(pages: MutableList<PagedMenu.PageItems>): PagedMenuBuilder {
         this.pages = pages
         return this
@@ -94,6 +181,14 @@ class PagedMenuBuilder @JvmOverloads constructor(
         return this
     }
 
+    /**
+     * Adds new pages to the menu.
+     * Will immediately populate them with the static items that have been set.
+     *
+     * @param amount Amount of pages to add, defaults to one
+     * @param size The size of the pages to add, defaults to default size
+     * @return This builder for use in the builder pattern
+     */
     @JvmOverloads
     fun addPage(amount: Int = 1, size: Int = defaultSize): PagedMenuBuilder {
         val initialSize = pages.size
@@ -110,6 +205,14 @@ class PagedMenuBuilder @JvmOverloads constructor(
         return this
     }
 
+    /**
+     * Sets how many pages should be in the menu.
+     * If we have too many pages, it deletes off the end.
+     * If we have too few pages, it adds new pages using addPage
+     *
+     * @param length New number of pages in the menu
+     * @return This builder for use in the builder pattern
+     */
     fun setMenuLength(length: Int): PagedMenuBuilder {
         if (length > pages.size) {
             addPage(amount = length - pages.size)
@@ -121,9 +224,16 @@ class PagedMenuBuilder @JvmOverloads constructor(
         return this
     }
 
-    override fun addBorder(borderItem: ItemStack, vararg borders: MenuBuilder.MenuBuilderBorder): PagedMenuBuilder {
-        // TODO change to work on all pages
-        super.addBorder(borderItem, *borders)
+    override fun addBorder(borderItem: MenuItem, vararg borders: MenuBuilder.MenuBuilderBorder): PagedMenuBuilder {
+        for (borderSide in borders) {
+            when (borderSide) {
+                // TODO needs updating when dropper menus exist
+                MenuBuilder.MenuBuilderBorder.TOP -> for (i in 0 until 9) setStaticItem(i, borderItem)
+                MenuBuilder.MenuBuilderBorder.BOTTOM -> for (i in 0 until 9) setStaticItem(size - i - 1, borderItem)
+                MenuBuilder.MenuBuilderBorder.LEFT -> for (i in 0 until size step 9) setStaticItem(i, borderItem)
+                MenuBuilder.MenuBuilderBorder.RIGHT -> for (i in 0 until size step 9) setStaticItem(i + 8, borderItem)
+            }
+        }
         return this
     }
 

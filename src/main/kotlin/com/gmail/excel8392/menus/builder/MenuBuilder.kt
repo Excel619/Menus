@@ -13,6 +13,9 @@ import org.bukkit.inventory.ItemStack
  *
  * Implementation Specification: Implementations of this interface should have generic type MenuBuilder<MyMenuBuilderClass>.
  * Doing otherwise will result in casting errors.
+ *
+ * @see com.gmail.excel8392.menus.builder.BasicMenuBuilder
+ * @see com.gmail.excel8392.menus.builder.PagedMenuBuilder
  */
 interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
 
@@ -21,7 +24,7 @@ interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
     /**
      * Set an item with a specific slot and MenuItem.
      *
-     * @param slot The slot to insert the icon at.
+     * @param slot The slot to insert the icon at
      * @param menuItem The MenuItem to represent this slot
      * @return This builder for use in the builder pattern
      */
@@ -31,7 +34,7 @@ interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
      * Set an item with a specific slot and ItemStack.
      * The ItemStack icon is immediately used to generate a MenuItem without any actions.
      *
-     * @param slot The slot to insert the icon at.
+     * @param slot The slot to insert the icon at
      * @param item The ItemStack icon to represent this slot
      * @return This builder for use in the builder pattern
      */
@@ -41,7 +44,7 @@ interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
      * Set an item with a specific slot and MenuItem.
      * The MenuItemBuilder is immediately used to build a MenuItem.
      *
-     * @param slot The slot to insert the icon at.
+     * @param slot The slot to insert the icon at
      * @param itemBuilder The MenuItem to represent this slot
      * @return This builder for use in the builder pattern
      */

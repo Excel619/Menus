@@ -3,13 +3,12 @@ package com.gmail.excel8392.menus.menu
 import com.gmail.excel8392.menus.MenusAPI
 import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.util.MenuUtil
-import java.lang.IllegalStateException
-import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
+import java.util.UUID
 
 /**
  * TODO
@@ -156,6 +155,7 @@ class PagedMenu @JvmOverloads constructor(
         }
 
         fun setItem(slot: Int, item: MenuItem) {
+            items[slot] = item
             if (slot >= size) {
                 try {
                     size = MenuUtil.getMinSlots(items.keys)
@@ -163,8 +163,9 @@ class PagedMenu @JvmOverloads constructor(
                     throw IllegalArgumentException("Cannot add item to menu, menu is at max size!")
                 }
             }
-            items[slot] = item
         }
+
+        fun isValidSlot(slot: Int) = slot >= size && size == 54
 
         fun isFull(): Boolean = items.size == size
 

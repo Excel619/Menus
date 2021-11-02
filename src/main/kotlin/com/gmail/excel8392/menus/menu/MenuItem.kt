@@ -9,11 +9,24 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.jvm.isAccessible
 
+/**
+ * An ItemStack wrapper for items inside custom menus.
+ * Contains a list of actions to execute on click, and whether or not to allow players to move this icon freely (defaults to menu default).
+ *
+ * @constructor Create a MenuItem with no actions
+ *
+ * @property icon ItemStack icon representing this MenuItem
+ * @param interactionsBlocked If specified (not null) overrides the menu default interactions blocked.
+ */
 open class MenuItem @JvmOverloads constructor(
     val icon: ItemStack,
     interactionsBlocked: Boolean? = null
 ) {
 
+    /**
+     * Whether or not to block interactions for this MenuItem.
+     * This uses an anonymous delegate to ensure that it defaults to the menu default value.
+     */
     var interactionsBlocked: Boolean by object: ReadWriteProperty<Any?, Boolean> {
         var value: Boolean? = interactionsBlocked
         override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean =
