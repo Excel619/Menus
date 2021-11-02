@@ -3,14 +3,21 @@ package com.gmail.excel8392.menus.menu
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Shop condition that checks if the player has a number of different types of items.
+ *
+ * @constructor Create Item shop condition
+ *
+ * @property items Pair of item and amount vararg, checks that player has all
+ */
 class ItemShopCondition constructor(
     vararg val items: Pair<ItemStack, Int>
 ): ShopCondition {
 
-    override fun checkCondition(player: Player, menu: Menu): Boolean {
+    override fun checkCondition(viewer: Player, menu: Menu): Boolean {
         for (pair in items) {
             var contains = 0
-            itemCheck@ for (target in player.inventory.contents) {
+            itemCheck@ for (target in viewer.inventory.contents) {
                 if (target.isSimilar(pair.first)) {
                     contains += target.amount
                     if (contains >= pair.second) break@itemCheck

@@ -20,6 +20,9 @@ import java.util.LinkedList
  * @property title The title of the menu at the top (supports color codes)
  * @property size The size of the menu, size is between 9 and 54 and is a multiple of 9
  * @property colorPrefix Color code prefix for translating alternate color codes
+ *
+ * @see com.gmail.excel8392.menus.builder.MenuBuilder
+ * @see com.gmail.excel8392.menus.menu.Menu
  */
 class BasicMenuBuilder @JvmOverloads constructor(
     val menusAPI: MenusAPI,
@@ -27,8 +30,6 @@ class BasicMenuBuilder @JvmOverloads constructor(
     override var size: Int,
     private var colorPrefix: Char = '&'
 ): MenuBuilder<BasicMenuBuilder> {
-
-    // TODO override default interface methods to return this class type
 
     /** Mapping of slots in the inventory to items **/
     private var items: MutableMap<Int, MenuItem> = HashMap()
@@ -74,9 +75,8 @@ class BasicMenuBuilder @JvmOverloads constructor(
     /**
      * Set the list of animations for this menu. Deletes all animations currently in the list.
      *
-     *
      * @param animations List of animations for this menu
-     * @return
+     * @return This builder for use in the builder pattern
      */
     fun setAnimations(animations: List<MenuAnimation>): BasicMenuBuilder {
         this.animations = if (animations is MutableList<MenuAnimation>) animations else LinkedList(animations)
@@ -84,10 +84,12 @@ class BasicMenuBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Set the map of items
+     * Set the map between inventory slots and item for this menu.
+     * This does not add the items, but rather disregards all changes made up until now
+     * and replaces them with the new map.
      *
-     * @param items
-     * @return
+     * @param items Map of each inventory slot to an item
+     * @return This builder for use in the builder pattern
      */
     fun setItems(items: MutableMap<Int, MenuItem>): BasicMenuBuilder {
         if (items.size > size) {

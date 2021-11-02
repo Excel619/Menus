@@ -3,6 +3,14 @@ package com.gmail.excel8392.menus.menu
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Shop transaction that grants items to the player upon purchase.
+ *
+ * @constructor Create Grant items shop transaction
+ *
+ * @property items Items to give to the player
+ * @property dropOnFail If the items should be dropped on the group if inventory is full
+ */
 class GrantItemsShopTransaction @JvmOverloads constructor(
     vararg val items: ItemStack,
     val dropOnFail: Boolean = true

@@ -17,9 +17,7 @@ class Menus(override val plugin: Plugin): MenusAPI {
         Bukkit.getPluginManager().registerEvents(MenusListener(this), plugin)
     }
 
-    override fun openMenu(player: Player, menu: Menu) {
-        player.openInventory(menu.inventory)
-    }
+    override fun openMenu(player: Player, menu: Menu) = menu.openMenu(player)
 
 
 }
