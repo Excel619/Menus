@@ -33,6 +33,19 @@ dependencies {
 
 }
 
+task copyJar {
+    copy {
+        from 'build/libs/Menus-1.0.jar'
+        into '../lib'
+    }
+}
+
+clean {
+    delete '../lib/Menus-1.0.jar'
+}
+
+copyJar.dependsOn(build)
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 

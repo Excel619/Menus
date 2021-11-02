@@ -80,12 +80,12 @@ class PagedMenu @JvmOverloads constructor(
     }
 
     fun getMenuItem(slot: Int, page: Int): MenuItem {
-        if (!containsMenuItem(slot)) throw IllegalArgumentException("Menu does not contain item at slot $slot! Use containsMenuItem to check first.")
+        if (!containsMenuItem(slot, page)) throw IllegalArgumentException("Menu does not contain item at slot $slot! Use containsMenuItem to check first.")
         return pageItems[page].items[slot]!!
     }
 
     fun containsMenuItem(slot: Int, page: Int): Boolean {
-        if (page !in pageItems.indices) return false
+        if (!isValidPage(page)) return false
         return pageItems[page].items.containsKey(slot)
     }
 
