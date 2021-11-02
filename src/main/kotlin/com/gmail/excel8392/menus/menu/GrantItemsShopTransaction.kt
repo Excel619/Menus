@@ -10,6 +10,10 @@ import org.bukkit.inventory.ItemStack
  *
  * @property items Items to give to the player
  * @property dropOnFail If the items should be dropped on the group if inventory is full
+ *
+ * @see com.gmail.excel8392.menus.menu.ShopTransaction
+ * @see com.gmail.excel8392.menus.menu.ShopCondition
+ * @see com.gmail.excel8392.menus.menu.ShopMenuItem
  */
 class GrantItemsShopTransaction @JvmOverloads constructor(
     vararg val items: ItemStack,

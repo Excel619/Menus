@@ -23,7 +23,7 @@ import java.util.UUID
  *
  * @property menusAPI The owning MenusAPI object constructed for the plugin using this API
  * @property title The title of this menu
- * @property items This items this menu contains, mapping between slots and an ItemStack wrapper, MenuItem
+ * @property items The items this menu contains, mapping between slots and an ItemStack wrapper, MenuItem
  * @property size The inventory size for this menu, size must be between 9 and 54 and be a multiple of 9
  * @property animations List of menu animations to run when a player opens this menu
  * @property interactionsBlocked Default value deciding if to allow players to move items in the inventory. Can be overwritten by MenuItems.

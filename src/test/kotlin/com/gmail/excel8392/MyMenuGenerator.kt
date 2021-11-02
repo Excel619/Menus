@@ -1,13 +1,13 @@
 package com.gmail.excel8392
 
-import com.gmail.excel8392.menus.MenuType
+import com.gmail.excel8392.menus.MenuGenerator
 import com.gmail.excel8392.menus.builder.BasicMenuBuilder
 import com.gmail.excel8392.menus.builder.MenuItemBuilder
 import com.gmail.excel8392.menus.menu.Menu
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-enum class MyMenuType(val menuBuilder: BasicMenuBuilder): MenuType {
+enum class MyMenuGenerator(val menuBuilder: BasicMenuBuilder): MenuGenerator {
 
     PLAYER_STATISTICS(
         BasicMenuBuilder(TODO(), 27)

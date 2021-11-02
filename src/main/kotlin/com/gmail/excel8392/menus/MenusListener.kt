@@ -9,6 +9,16 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 
+/**
+ * Bukkit event listener that handles click events and close events for Menu library menus.
+ *
+ * Each Menus API instance will have a different listener registered for it.
+ * This listener doesn't execute much logic rather delegates it to the menu to handle.
+ *
+ * @constructor Create a Menus listener for registering with Bukkit
+ *
+ * @property menusAPI Encompassing Menus API registering this listener
+ */
 class MenusListener(val menusAPI: MenusAPI): Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)

@@ -9,6 +9,10 @@ import org.bukkit.inventory.ItemStack
  * @constructor Create Item shop condition
  *
  * @property items Pair of item and amount vararg, checks that player has all
+ *
+ * @see com.gmail.excel8392.menus.menu.ShopCondition
+ * @see com.gmail.excel8392.menus.menu.ShopTransaction
+ * @see com.gmail.excel8392.menus.menu.ShopMenuItem
  */
 class ItemShopCondition constructor(
     vararg val items: Pair<ItemStack, Int>

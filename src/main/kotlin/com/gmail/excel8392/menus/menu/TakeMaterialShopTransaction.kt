@@ -3,6 +3,19 @@ package com.gmail.excel8392.menus.menu
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
+/**
+ * Special type of transaction which takes different amounts of items of a certain Material from the viewer.
+ * Upon failure (missing items/materials) returns false, which will throw a Runtime exception if using ShopMenuItem.
+ *
+ * @constructor Create a take material shop transaction
+ *
+ * @property material Material to take from
+ * @property amount Amount of the material to take
+ *
+ * @see com.gmail.excel8392.menus.menu.ShopTransaction
+ * @see com.gmail.excel8392.menus.menu.ShopCondition
+ * @see com.gmail.excel8392.menus.menu.ShopMenuItem
+ */
 class TakeMaterialShopTransaction @JvmOverloads constructor(
     val material: Material,
     val amount: Int = 1

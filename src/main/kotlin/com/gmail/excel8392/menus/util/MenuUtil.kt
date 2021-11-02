@@ -41,9 +41,9 @@ internal object MenuUtil {
      *
      * @return First page with at least one empty slot
      */
-    internal fun getFirstEmptyPage(pages: MutableList<PagedMenu.PageItems>, newPageDefaultSize: Int): PagedMenu.PageItems {
+    internal fun getFirstEmptyPage(pages: MutableList<PagedMenu.Page>, newPageDefaultTitle: String, newPageDefaultSize: Int): PagedMenu.Page {
         for (page in pages) if (!page.isFull()) return page
-        return PagedMenu.PageItems(newPageDefaultSize).also { pages.add(it) }
+        return PagedMenu.Page(newPageDefaultTitle, newPageDefaultSize).also { pages.add(it) }
     }
 
     /**

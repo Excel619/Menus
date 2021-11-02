@@ -3,6 +3,19 @@ package com.gmail.excel8392.menus.menu
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Special type of transaction which takes different amounts of ItemStacks from the viewer.
+ * Items taken are checked using the isSimilar check for ItemStacks
+ * Upon failure (missing items) returns false, which will throw a Runtime exception if using ShopMenuItem.
+ *
+ * @constructor Create a take items shop transaction
+ *
+ * @property items Items to take vararg, pair key is item, pair value is amount
+ *
+ * @see com.gmail.excel8392.menus.menu.ShopTransaction
+ * @see com.gmail.excel8392.menus.menu.ShopCondition
+ * @see com.gmail.excel8392.menus.menu.ShopMenuItem
+ */
 class TakeItemsShopTransaction constructor(
     vararg val items: Pair<ItemStack, Int>
 ): ShopTransaction {

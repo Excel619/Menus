@@ -4,6 +4,12 @@ import org.bukkit.entity.Player
 
 /**
  * A condition that is checked when any player is attempting to purchase items from a shop menu.
+ *
+ * @see com.gmail.excel8392.menus.menu.MaterialShopCondition
+ * @see com.gmail.excel8392.menus.menu.ItemShopCondition
+ * @see com.gmail.excel8392.menus.menu.GrantItemsShopTransaction
+ * @see com.gmail.excel8392.menus.menu.TakeItemsShopTransaction
+ * @see com.gmail.excel8392.menus.menu.TakeMaterialShopTransaction
  */
 interface ShopCondition {
 

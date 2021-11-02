@@ -13,14 +13,16 @@ import java.util.LinkedList
 
 /**
  * Implementation of the Menu Builder allowing for menus of multiple pages.
+ * When setting items in specific pages, <b>page numbers start from 0!</b>
  *
  * Note that while it is required to provide a default size (for newly created pages),
- * each page can be of different size.
+ * each page can be of different size. In addition page titles can be modified per page.
+ * In addition, page title supports %pagenumber% which will be replaced with the number for that page.
  *
  * @constructor Create an empty paged menu builder
  *
  * @property menusAPI The owning MenusAPI object constructed for the plugin using this API
- * @property title The title of the menu at the top (supports color codes)
+ * @property defaultTitle The default title of the menu at the top (supports color codes)
  * @property defaultSize The default size for new pages, size is between 9 and 54 and is a multiple of 9
  * @property colorPrefix Color code prefix for translating alternate color codes
  *
@@ -29,15 +31,20 @@ import java.util.LinkedList
  */
 class PagedMenuBuilder @JvmOverloads constructor(
     var menusAPI: MenusAPI,
-    var title: String,
+    var defaultTitle: String,
     val defaultSize: Int,
     private var colorPrefix: Char = '&'
 ): MenuBuilder<PagedMenuBuilder> {
 
+    companion object {
+        /** Placeholder for the page number used in page titles */
+        private const val PAGE_NUMBER_PLACEHOLDER = "%pagenumber%"
+    }
+
     override var size = defaultSize
 
     /** List of each page in the menu, with each page's items */
-    var pages: MutableList<PagedMenu.PageItems> = ArrayList()
+    var pages: MutableList<PagedMenu.Page> = ArrayList()
         private set
 
     /**
@@ -55,15 +62,9 @@ class PagedMenuBuilder @JvmOverloads constructor(
     /** Lambda to run on click anywhere in the menu */
     private var onClick: (InventoryClickEvent) -> Unit = {}
 
-    /**
-     * Construct this PagedMenuBuilder with no title set.
-     *
-     * @param menusAPI The owning MenusAPI object constructed for the plugin using this API
-     * @param defaultSize The default size for new pages, size is between 9 and 54 and is a multiple of 9
-     * @param colorPrefix Color code prefix for translating alternate color codes
-     */
-    @JvmOverloads
-    constructor(menusAPI: MenusAPI, defaultSize: Int, colorPrefix: Char = '&'): this(menusAPI, "", defaultSize, colorPrefix = colorPrefix)
+    init {
+        defaultTitle = ChatColor.translateAlternateColorCodes(colorPrefix, defaultTitle)
+    }
 
     override fun setItem(slot: Int, menuItem: MenuItem): PagedMenuBuilder {
         setStaticItem(slot, menuItem)
@@ -161,7 +162,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
      * @param pages Mutable list of the new page items
      * @return This builder for use in the builder pattern
      */
-    fun setPages(pages: MutableList<PagedMenu.PageItems>): PagedMenuBuilder {
+    fun setPages(pages: MutableList<PagedMenu.Page>): PagedMenuBuilder {
         this.pages = pages
         return this
     }
@@ -193,7 +194,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
     fun addPage(amount: Int = 1, size: Int = defaultSize): PagedMenuBuilder {
         val initialSize = pages.size
         repeat(amount) {
-            val pageItems = PagedMenu.PageItems(defaultSize)
+            val pageItems = PagedMenu.Page(defaultTitle.replace(PAGE_NUMBER_PLACEHOLDER, "${pages.size + 1}"), defaultSize)
             for (slot in staticItems.keys) {
                 if (!staticItems[slot]!!.second.contains(it + initialSize)) {
                     pageItems.setItem(slot, staticItems[slot]!!.first)
@@ -224,6 +225,21 @@ class PagedMenuBuilder @JvmOverloads constructor(
         return this
     }
 
+    /**
+     * Sets the page title for one specific page.
+     * Supports color codes and the page number placeholder.
+     *
+     * @param title New title
+     * @param pageNumbers Page numbers vararg of pages to apply to
+     */
+    fun setPageTitle(title: String, vararg pageNumbers: Int) {
+        val coloredTitle = ChatColor.translateAlternateColorCodes(colorPrefix, title)
+        for (pageNumber in pageNumbers) {
+            if (pageNumber >= pages.size) throw IllegalArgumentException("Page number $pageNumber does not yet exist in builder!")
+            pages[pageNumber].title = coloredTitle.replace(PAGE_NUMBER_PLACEHOLDER, "${pageNumber + 1}")
+        }
+    }
+
     override fun addBorder(borderItem: MenuItem, vararg borders: MenuBuilder.MenuBuilderBorder): PagedMenuBuilder {
         for (borderSide in borders) {
             when (borderSide) {
@@ -239,22 +255,21 @@ class PagedMenuBuilder @JvmOverloads constructor(
 
     override fun build() = PagedMenu(
         menusAPI,
-        ChatColor.translateAlternateColorCodes(colorPrefix, title),
         pages,
         animations,
         interactionsBlocked = interactionsBlocked,
-        onClose = onClose,
-        onClick = onClick
+        onCloseHandler = onClose,
+        onClickHandler = onClick
     )
 
     override fun clone(): PagedMenuBuilder {
-        val newPages = ArrayList<PagedMenu.PageItems>()
+        val newPages = ArrayList<PagedMenu.Page>()
         for (page in pages) {
             val pageItems = HashMap<Int, MenuItem>()
             for ((slot, item) in page.items) pageItems[slot] = item
-            newPages.add(PagedMenu.PageItems(pageItems, page.size))
+            newPages.add(PagedMenu.Page(page.title, pageItems, page.size))
         }
-        return PagedMenuBuilder(menusAPI, title, defaultSize, colorPrefix = colorPrefix)
+        return PagedMenuBuilder(menusAPI, defaultTitle, defaultSize, colorPrefix = colorPrefix)
             .setPages(newPages)
             .setAnimations(animations)
             .setInteractionsBlocked(interactionsBlocked)

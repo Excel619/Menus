@@ -10,6 +10,10 @@ import org.bukkit.entity.Player
  *
  * @property material Material to check
  * @property amount Amount of items required
+ *
+ * @see com.gmail.excel8392.menus.menu.ShopCondition
+ * @see com.gmail.excel8392.menus.menu.ShopTransaction
+ * @see com.gmail.excel8392.menus.menu.ShopMenuItem
  */
 class MaterialShopCondition(val material: Material, val amount: Int): ShopCondition {
 

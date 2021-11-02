@@ -21,28 +21,44 @@ open class MenuItem @JvmOverloads constructor(
     interactionsBlocked: Boolean? = null
 ) {
 
+    /** Nullable value for interactions blocked, null signifying menu default (overwrite) */
     private var internalInteractionsBlocked: Boolean? = interactionsBlocked
 
     /**
-     * Whether or not to block interactions for this MenuItem.
-     * This uses an anonymous delegate to ensure that it defaults to the menu default value.
+     * Whether or not to block interactions for this MenuItem. Wrapper of the internal value which is nullable.
+     * This uses custom accessors so that it is exposed as a non null value.
      */
-    var interactionsBlocked: Boolean by object: ReadWriteProperty<Any?, Boolean> {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean =
-            internalInteractionsBlocked ?: throw IllegalStateException("MenuItem#interactionsBlocked not overridden by MenuItem holder!")
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) { internalInteractionsBlocked = value }
-    }
+    var interactionsBlocked: Boolean
+        get() = internalInteractionsBlocked ?: throw IllegalStateException("MenuItem#interactionsBlocked not overridden by MenuItem holder!")
+        set(value) { internalInteractionsBlocked = value }
 
+    /** List of actions to execute on click */
     val actions = LinkedList<MenuAction>()
 
+    /**
+     * Add an action to execute on click. Will execute in order after the actions added previously.
+     *
+     * @param action New action to add
+     */
     fun addAction(action: MenuAction) {
         actions.add(action)
     }
 
+    /**
+     * Execute the logic on click for this menu item.
+     *
+     * @param event Bukkit click event wrapper
+     * @param menu Menu that this button is in
+     */
     fun onClick(event: InventoryClickEvent, menu: Menu) {
         for (action in actions) action.execute(event, menu)
     }
 
+    /**
+     * If this menu item does not specify whether or not to allow players to move this item, this allows this encompassing menu to overwrite the value.
+     *
+     * @param defaultInteractionsBlocked Menu default value
+     */
     fun applyDefaultInteractionsBlocked(defaultInteractionsBlocked: Boolean) = internalInteractionsBlocked ?: run { interactionsBlocked = defaultInteractionsBlocked }
 
 }

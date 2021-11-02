@@ -80,7 +80,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Set the custom display name for the itemstack icon representing this menu item.
+     * Set the custom display name for the ItemStack icon representing this menu item.
      *
      * @param name Custom display name (supports color codes)
      * @return This builder for use in the builder pattern
@@ -92,7 +92,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Set the custom lore for the itemstack icon representing this menu item.
+     * Set the custom lore for the ItemStack icon representing this menu item.
      *
      * @param lore Custom lore vararg (supports color codes)
      * @return This builder for use in the builder pattern
@@ -106,7 +106,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Set the custom lore for the itemstack icon representing this menu item.
+     * Set the custom lore for the ItemStack icon representing this menu item.
      *
      * @param lore Custom lore list (supports color codes)
      * @return This builder for use in the builder pattern
@@ -120,7 +120,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Appends lines of custom lore for the itemstack icon representing this menu item.
+     * Appends lines of custom lore for the ItemStack icon representing this menu item.
      *
      * @param lore Custom lore vararg (supports color codes)
      * @return This builder for use in the builder pattern
@@ -134,7 +134,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Adds item flags to the itemstack icon representing this menu item.
+     * Adds item flags to the ItemStack icon representing this menu item.
      *
      * @param flags Custom item flags vararg
      * @return This builder for use in the builder pattern
@@ -146,7 +146,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Adds an attribute modifier to the itemstack icon representing this menu item.
+     * Adds an attribute modifier to the ItemStack icon representing this menu item.
      *
      * @param attribute Custom attribute type
      * @param modifier Custom attribute modifier to apply
@@ -159,7 +159,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Adds attribute modifiers to the itemstack icon representing this menu item.
+     * Adds attribute modifiers to the ItemStack icon representing this menu item.
      *
      * @param modifiers Pair of attribute type and modifier to apply vararg
      * @return This builder for use in the builder pattern
@@ -171,7 +171,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Set whether or not the itemstack icon representing this menu item is unbreakable.
+     * Set whether or not the ItemStack icon representing this menu item is unbreakable.
      *
      * @param unbreakable Is unbreakable
      * @return This builder for use in the builder pattern
@@ -183,7 +183,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Add an enchantment to the itemstack icon representing this menu item.
+     * Add an enchantment to the ItemStack icon representing this menu item.
      *
      * @param enchantment Enchantment to add
      * @param level Level of enchantment
@@ -196,7 +196,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Adds multiple enchantments to the itemstack icon representing this menu item.
+     * Adds multiple enchantments to the ItemStack icon representing this menu item.
      *
      * @param enchants Pair of enchantment types and levels vararg
      * @return This builder for use in the builder pattern
@@ -208,7 +208,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Run a custom lambda using the current item meta of the itemstack representing this menu item.
+     * Run a custom lambda using the current item meta of the ItemStack representing this menu item.
      * The lambda will be run immediately, and any changes made to the meta will be applied to it.
      *
      * @param consumer Lambda consumer, ItemMeta parameter
@@ -221,7 +221,7 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Sets the damage/durability of the itemstack icon representing this menu item.
+     * Sets the damage/durability of the ItemStack icon representing this menu item.
      *
      * @param damage Damange/Durability of the item
      * @return This builder for use in the builder pattern
@@ -233,11 +233,11 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Sets the itemstack icon representing this menu item.
+     * Sets the ItemStack icon representing this menu item.
      * This will also completely override the current item meta and replace it with a new one!
      * All changes will be lost.
      *
-     * @param item Itemstack icon
+     * @param item ItemStack icon
      * @return This builder for use in the builder pattern
      */
     fun setItemStack(item: ItemStack): MenuItemBuilder {
@@ -247,10 +247,10 @@ open class MenuItemBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Sets the item meta for the itemstack icon representing this menu item.
+     * Sets the item meta for the ItemStack icon representing this menu item.
      * Completely overrides the previous item meta and any changes that were made to it.
      *
-     * @param meta Item meta for the itemstack icon
+     * @param meta Item meta for the ItemStack icon
      * @return This builder for use in the builder pattern
      */
     fun setItemMeta(meta: ItemMeta?): MenuItemBuilder {
