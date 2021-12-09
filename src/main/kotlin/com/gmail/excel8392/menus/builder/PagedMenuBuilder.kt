@@ -66,15 +66,11 @@ class PagedMenuBuilder @JvmOverloads constructor(
         defaultTitle = ChatColor.translateAlternateColorCodes(colorPrefix, defaultTitle)
     }
 
-    override fun setItem(slot: Int, menuItem: MenuItem): PagedMenuBuilder {
-        setStaticItem(slot, menuItem)
-        return this
-    }
+    override fun setItem(slot: Int, menuItem: MenuItem) = setStaticItem(slot, menuItem)
 
-    override fun addItem(menuItem: MenuItem): PagedMenuBuilder {
-        setStaticItem(MenuUtil.getFirstEmptySlot(pages[0].items, pages[0].size), menuItem)
-        return this
-    }
+    override fun addItem(menuItem: MenuItem) = setStaticItem(MenuUtil.getFirstEmptySlot(pages[0].items, pages[0].size), menuItem)
+
+    override fun removeItem(slot: Int) = removeItem(slot, 0)
 
     override fun addAnimation(menuAnimation: MenuAnimation): PagedMenuBuilder {
         animations.add(menuAnimation)
@@ -138,6 +134,19 @@ class PagedMenuBuilder @JvmOverloads constructor(
     fun setStaticItem(slot: Int, item: MenuItem, vararg excludePages: Int = intArrayOf()): PagedMenuBuilder {
         staticItems[slot] = Pair(item, excludePages)
         for ((index, page) in pages.withIndex()) if (!excludePages.contains(index)) page.setItem(slot, item)
+        return this
+    }
+
+    /**
+     * Remove an item from a specific slot and page.
+     * If the slot is not populated, nothing will happen.
+     *
+     * @param slot The slot to remove the item at
+     * @return This builder for use in the builder pattern
+     */
+    fun removeItem(slot: Int, pageNumber: Int): PagedMenuBuilder {
+        if (pageNumber !in 0 until pages.size) throw IllegalArgumentException("Invalid page size $pageNumber does not exist!")
+        pages[pageNumber].items.remove(slot)
         return this
     }
 
