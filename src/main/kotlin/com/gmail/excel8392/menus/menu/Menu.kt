@@ -43,11 +43,14 @@ open class Menu @JvmOverloads constructor(
 
     // It should be noted that we are leaking "this" in the Bukkit.createInventory,
     // but this is of no concern because it does not use the InventoryHolder
+    // In addition, the "internal" keyword is used to avoid platform declaration clash with
+    // InventoryHolder's "getInventory", as kotlin does not create JVM getters and setters for
+    // internal (and private) kotlin properties, rather the kotlin property itself is used
+    // See https://youtrack.jetbrains.com/issue/KT-6653
     /** The GUI backing this menu, containing all of its items */
-    protected var inventory: Inventory =
+    internal var inventory: Inventory =
         if (title.isEmpty() || title.isBlank()) Bukkit.createInventory(this, size)
         else Bukkit.createInventory(this, size, title)
-    @JvmName("getRawInventory") get // This is to avoid declaration clash with interface method
 
     /** Animations for this menu sorted by interval length */
     protected val sortedAnimations = HashMap<Int, MutableList<MenuAnimation>>()
