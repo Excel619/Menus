@@ -43,6 +43,7 @@ class BasicMenuBuilder @JvmOverloads constructor(
     private var onClick: (InventoryClickEvent) -> Unit = {}
 
     init {
+        title = ChatColor.translateAlternateColorCodes(colorPrefix, title)
         if (!MenuUtil.isValidMenuSize(size)) throw IllegalArgumentException("$size is not a valid bukkit menu size!")
     }
 
@@ -64,6 +65,11 @@ class BasicMenuBuilder @JvmOverloads constructor(
 
     override fun addItem(menuItem: MenuItem): BasicMenuBuilder {
         items[MenuUtil.getFirstEmptySlot(items, size)] = menuItem
+        return this
+    }
+
+    override fun removeItem(slot: Int): BasicMenuBuilder {
+        items.remove(slot)
         return this
     }
 
@@ -118,7 +124,7 @@ class BasicMenuBuilder @JvmOverloads constructor(
 
     override fun build() = Menu(
         menusAPI,
-        ChatColor.translateAlternateColorCodes(colorPrefix, title),
+        title,
         items,
         size,
         animations,

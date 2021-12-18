@@ -68,6 +68,15 @@ interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
     fun addItem(item: ItemStack): T = addItem(MenuItem(item))
 
     /**
+     * Remove an item from a specific slot.
+     * If the slot is not populated, nothing will happen.
+     *
+     * @param slot The slot to remove the item at
+     * @return This builder for use in the builder pattern
+     */
+    fun removeItem(slot: Int): T
+
+    /**
      * Add a menu animation for this menu.
      *
      * @param menuAnimation The animation to add
