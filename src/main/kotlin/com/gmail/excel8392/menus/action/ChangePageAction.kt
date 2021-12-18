@@ -2,7 +2,6 @@ package com.gmail.excel8392.menus.action
 
 import com.gmail.excel8392.menus.menu.Menu
 import com.gmail.excel8392.menus.menu.PagedMenu
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 
@@ -47,10 +46,7 @@ class ChangePageAction(val type: Type): MenuAction {
 
         // Open menu depending on action type
         when (type) {
-            Type.NEXT_PAGE -> {
-                pagedMenu.openNextPage(player)
-
-            }
+            Type.NEXT_PAGE -> pagedMenu.openNextPage(player)
             Type.PREVIOUS_PAGE -> pagedMenu.openPreviousPage(player)
             Type.FIRST_PAGE -> pagedMenu.openMenu(player)
             Type.LAST_PAGE -> pagedMenu.openMenuPage(player, pagedMenu.size() - 1)
