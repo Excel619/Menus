@@ -60,6 +60,9 @@ open class Menu @JvmOverloads constructor(
     /** Map between each player with the menu open and the menu animations running for them */
     internal val runningAnimations = HashMap<UUID, RunningAnimations>()
 
+    /** Set of all players viewing this specific menu */
+    val viewers = HashSet<Player>()
+
     init {
         // Set size to a valid inventory size (between 0-54, multiple of 9)
         if (size !in 1..54 || size % 9 != 0) size = MenuUtil.getMinSlots(items.keys)
@@ -113,6 +116,7 @@ open class Menu @JvmOverloads constructor(
      * @param player Menu viewer
      */
     open fun openMenu(player: Player) {
+        viewers.add(player)
         player.openInventory(inventory)
         beginAnimation(player)
     }
@@ -159,6 +163,7 @@ open class Menu @JvmOverloads constructor(
         // Stop any running animations for this player
         if (runningAnimations.containsKey(event.player.uniqueId)) runningAnimations[event.player.uniqueId]!!.stop()
         runningAnimations.remove(event.player.uniqueId)
+        viewers.remove(event.player)
     }
 
     /**

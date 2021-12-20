@@ -48,7 +48,7 @@ class PagedMenu @JvmOverloads constructor(
     /** The GUIs backing this menu, each containing page's inventory */
     private var inventories = ArrayList<Inventory>()
     /** List of viewers of this menu, mapped to page number they are viewing. Used for turning pages. */
-    private val viewers = HashMap<UUID, Int>()
+    private val viewerPages = HashMap<UUID, Int>()
 
     init {
         // If we have only one page, then the Menu init block will
@@ -139,7 +139,7 @@ class PagedMenu @JvmOverloads constructor(
     fun openMenuPage(player: Player, page: Int) {
         if (!isValidPage(page)) throw IllegalArgumentException("Page $page does not exist in this menu!")
         player.openInventory(getInventoryPage(page))
-        viewers[player.uniqueId] = page
+        viewerPages[player.uniqueId] = page
     }
 
     /**
@@ -162,7 +162,7 @@ class PagedMenu @JvmOverloads constructor(
         onClickHandler(event)
 
         // Get the page we are viewing, if not viewing return
-        val page = viewers[event.whoClicked.uniqueId] ?: return
+        val page = viewerPages[event.whoClicked.uniqueId] ?: return
         // Check that there is a menu item in the slot
         if (!containsMenuItem(event.slot, page)) return
 
@@ -175,7 +175,7 @@ class PagedMenu @JvmOverloads constructor(
 
     override fun onClose(event: InventoryCloseEvent) {
         super.onClose(event)
-        viewers.remove(event.player.uniqueId)
+        viewerPages.remove(event.player.uniqueId)
     }
 
     /**
@@ -185,8 +185,8 @@ class PagedMenu @JvmOverloads constructor(
      * @param player Menu viewer
      */
     fun openNextPage(player: Player) {
-        if (!viewers.containsKey(player.uniqueId)) throw IllegalStateException("Cannot open next page for PagedMenu if player is not viewing this menu!")
-        val currentPage = viewers[player.uniqueId]!!
+        if (!viewerPages.containsKey(player.uniqueId)) throw IllegalStateException("Cannot open next page for PagedMenu if player is not viewing this menu!")
+        val currentPage = viewerPages[player.uniqueId]!!
         val nextPage = if (isValidPage(currentPage + 1)) currentPage + 1 else currentPage
         openMenuPage(player, nextPage)
     }
@@ -198,8 +198,8 @@ class PagedMenu @JvmOverloads constructor(
      * @param player Menu viewer
      */
     fun openPreviousPage(player: Player) {
-        if (!viewers.containsKey(player.uniqueId)) throw IllegalStateException("Cannot open next page for PagedMenu if player is not viewing this menu!")
-        val currentPage = viewers[player.uniqueId]!!
+        if (!viewerPages.containsKey(player.uniqueId)) throw IllegalStateException("Cannot open next page for PagedMenu if player is not viewing this menu!")
+        val currentPage = viewerPages[player.uniqueId]!!
         val previousPage = if (isValidPage(currentPage - 1)) currentPage - 1 else currentPage
         openMenuPage(player, previousPage)
     }
