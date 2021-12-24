@@ -152,6 +152,14 @@ interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
     /**
      * Add a border around the outside of this menu with a select item
      *
+     * @param borderItem MenuItemBuilder to use to populate border slots
+     * @return This builder for use in the builder pattern
+     */
+    fun addBorder(borderItem: MenuItemBuilder, vararg borders: MenuBuilderBorder) = addBorder(borderItem.build(), *borders)
+
+    /**
+     * Add a border around the outside of this menu with a select item
+     *
      * @param borderItem MenuItem to use to populate border slots
      * @return This builder for use in the builder pattern
      */
@@ -160,10 +168,18 @@ interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
     /**
      * Add a border around the outside of this menu with a select item
      *
-     * @param borderItem ItemStack to use to populator border slots
+     * @param borderItem ItemStack to use to populate border slots
      * @return This builder for use in the builder pattern
      */
     fun addBorder(borderItem: ItemStack) = addBorder(borderItem, *MenuBuilderBorder.values())
+
+    /**
+     * Add a border around the outside of this menu with a select item
+     *
+     * @param borderItem MenuItemBuilder to use to populate border slots
+     * @return This builder for use in the builder pattern
+     */
+    fun addBorder(borderItem: MenuItemBuilder) = addBorder(borderItem.build(), *MenuBuilderBorder.values())
 
     /**
      * Construct a new menu from the values stored in this builder.
