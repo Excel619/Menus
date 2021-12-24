@@ -121,6 +121,22 @@ class PagedMenuBuilder @JvmOverloads constructor(
     }
 
     /**
+     * Set an item with a specific page, slot, and ItemStack.
+     * This is unlike the default overloads for addItem as they set items across all pages.
+     * Will expand the menu if the page number provided does not yet exist.
+     * The MenuItemBuilder is immediately used to build a MenuItem.
+     *
+     * @param slot The slot to insert the icon at
+     * @param pageNumber The number of the page to insert the icon at
+     * @param itemBuilder The MenuItemBuilder used to create an icon
+     * @return This builder for use in the builder pattern
+     */
+    fun setItem(slot: Int, pageNumber: Int, itemBuilder: MenuItemBuilder): PagedMenuBuilder {
+        setItem(slot, pageNumber, itemBuilder.build())
+        return this
+    }
+
+    /**
      * Set an item with a specific, slot, and MenuItem so that is identical across all pages.
      * This will apply to all pages that are created in the future as well.
      * Excluded pages don't need to exist yet, but on creation they will have the item not applied.

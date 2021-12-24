@@ -45,7 +45,7 @@ interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
      * The MenuItemBuilder is immediately used to build a MenuItem.
      *
      * @param slot The slot to insert the icon at
-     * @param itemBuilder The MenuItem to represent this slot
+     * @param itemBuilder The MenuItemBuilder used to create an icon
      * @return This builder for use in the builder pattern
      */
     fun setItem(slot: Int, itemBuilder: MenuItemBuilder): T = setItem(slot, itemBuilder.build())
