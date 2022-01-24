@@ -13,6 +13,16 @@ To bundle the dependency into your plugin, use [Maven Shade](https://maven.apach
 
 ## Usage
 
+- [Getting Started](https://github.com/Excel619/Menus#getting-started)
+- [Creating a basic menu](https://github.com/Excel619/Menus#creating-a-basic-menu)
+- [On-click menu item actions](https://github.com/Excel619/Menus#on-click-menu-item-actions)
+- [Paged menus](https://github.com/Excel619/Menus#paged-menus)
+- [On-close and on-click menu-wide handlers](https://github.com/Excel619/Menus#on-close-and-on-click-menu-wide-handlers)
+- [Blocking interactions in menus](https://github.com/Excel619/Menus#blocking-interactions-in-menus)
+- [Menu generators and menu item generators (custom menus for each player)](https://github.com/Excel619/Menus#menu-generators-and-menu-item-generators)
+- [Shop menus](https://github.com/Excel619/Menus#shop-menus)
+- [Animated menus](https://github.com/Excel619/Menus#animated-menus)
+- [Custom menu builders](https://github.com/Excel619/Menus#custom-menu-builders)
 
 ### Getting started
 In the `onEnable` block for your plugin, create a new `Menus` object and pass in your plugin instance as the only parameter. Save this object for use later to create and open menus.
@@ -96,7 +106,7 @@ This will allow viewers to move **all** items inside the inventory. You may want
 myItemBuilder.setIteractionsBlocked(false);
 ```
 
-### Menu generators and menu item generators
+### Menu generators and menu item generators (custom menus for each player)
 TODO
 
 ### Shop menus
@@ -107,6 +117,3 @@ TODO
 
 ### Custom menu builders
 TODO
-
-
-
