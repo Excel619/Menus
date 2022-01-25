@@ -27,7 +27,7 @@ To bundle the dependency into your plugin, use [Maven Shade](https://maven.apach
 
 ### Getting started
 In the `onEnable` block for your plugin, create a new `Menus` object and pass in your plugin instance as the only parameter. Save this object for use later to create and open menus.
-<small>Note that you cannot create more than one of these objects with a single plugin instance.</small>
+<sub><sup>Note that you cannot create more than one of these objects with a single plugin instance.</sub></sup>
 
 ### Creating a basic menu
 When creating a menu, use your `Menus` singleton for creating a **MenuBuilder** like so:
@@ -64,7 +64,7 @@ There are four options for determined on click actions:
 - `OpenMenuAction` for opening a new menu, `new OpenMenuAction(() -> menu)`
 - `CustomMenuAction` for handling the click with a custom action, `new CustomMenuAction((event) -> {})`
 
-<small>A new menu action for playing a sound and displaying text will be coming a future version</small>
+<sub><sup>A new menu action for playing a sound and displaying text will be coming a future version</sub></sup>
 
 Multiple actions can be added to a single menu item. Menu actions other than custom ones should not be added to menu items that have interactions blocked set to false.
 
@@ -73,11 +73,11 @@ Paged menus can also be made with ease by using Menus. A variation of the basic 
 ```java
 PagedMenuBuilder myPagedMenuBuilder = menus.pagedMenuBuilder("My Paged Menu", 27); // Title, size
 ```
-First, it is important to recognize that many of the properties set for paged menus (like title, size) are simply defaults for all pages in the menu. That doesn't mean that each page can have a different title however, it just needs to be set manually. One primary setting that **is** menu-wide is the interactions blocked. <small>*Note that this is planned to change in future versions</small>
+First, it is important to recognize that many of the properties set for paged menus (like title, size) are simply defaults for all pages in the menu. That doesn't mean that each page can have a different title however, it just needs to be set manually. One primary setting that **is** menu-wide is the interactions blocked. <sub><sup>*Note that this is planned to change in future versions</sub></sup>
 
 When setting items in a paged menu using `setItem`, it will default to setting these items **across all pages**, and in any pages created in the future. To set items for a specific page, specify the page number like so: `setItem(slot, pageNumber, item)`. **Page numbers are counted starting from zero, like an array**.
 
-To have pages of different sizes or titles, you can use `setPageSize(pageNumber, newSize)` and `setPageTitle(title, pageNumberOne, pageNumberTwo)`. <small>The order of arguments for setPageSize will change in a future version to allow a vararg of pages to be modified.</small>
+To have pages of different sizes or titles, you can use `setPageSize(pageNumber, newSize)` and `setPageTitle(title, pageNumberOne, pageNumberTwo)`. <sub><sup>The order of arguments for setPageSize will change in a future version to allow a vararg of pages to be modified.</sub></sup>
 
 To modify the number of pages in the menu, use `setMenuLength(length)` or `addPage(amount, size)`. New pages will be created with the menu-wide items previously set.
 
@@ -91,7 +91,7 @@ MenuItem nextPage = new MenuItemBuilder(Material.ARROW, 1, "&eNext Page").addAct
 myPagedMenuBuilder.setStaticItem(8, nextPage, 4); // last variable is vararg of page numbers to exclude
 ```
 
-<small>Currently there isn't a function to do this easily but there will be in a future version.</small> 
+<sub><sup>Currently there isn't a function to do this easily but there will be in a future version.</sub></sup>
 
 
 ### On-close and on-click menu-wide handlers
@@ -104,7 +104,7 @@ myMenuBuilder.setOnClose((event) -> { // InventoryCloseEvent
     // Custom handler here
 });
 ```
-In order to access the `Menu` object that called your handler, you will need to build the menu first and then set its on-click handler. <small>This is planned to change in a future version, where the menu is passed as a parameter for the lambda handler.</small>
+In order to access the `Menu` object that called your handler, you will need to build the menu first and then set its on-click handler. <sub><sup>This is planned to change in a future version, where the menu is passed as a parameter for the lambda handler.</sub></sup>
 ```java
 Menu menu = myMenuBuilder.build();
 menu.setOnClick((event) -> {
@@ -120,7 +120,7 @@ pagedMenu.setOnClick((event) -> {
 });
 pagedMenu.openMenu(player);
 ```
-<small>It is also planned to change in a future version that menu-wide handlers for paged menus will include the page the viewer was on when the event was fired as a parameter.</small>
+<sub><sup>It is also planned to change in a future version that menu-wide handlers for paged menus will include the page the viewer was on when the event was fired as a parameter.</sup></sub>
 
 ### Blocking interactions in menus
 By default, all menus do not allow the user to modify their contents by dragging items in the GUI. This default can be changed for the entire menu by running 
