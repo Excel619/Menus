@@ -1,3 +1,4 @@
+
 # Menus API By Excel
 
 Menus runs on the Bukkit API for Minecraft and allows developers to create custom GUI menus with ease, and does nothing on its own. It is written in Kotlin and Gradle, and is compatible with most versions of Minecraft. The API is still compatible with java-based projects despite not being written in java.
@@ -94,20 +95,47 @@ myPagedMenuBuilder.setStaticItem(8, nextPage, 4); // last variable is vararg of 
 
 
 ### On-close and on-click menu-wide handlers
-TODO
+In addition to supporting customized actions for each menu item, the Menus API allows for menu-wide handlers for any click inside the inventory, and on inventory close. To add a handler, simply use:
+```java
+myMenuBuilder.setOnClick((event) -> { // InventoryClickEvent
+    // Custom handler here
+});
+myMenuBuilder.setOnClose((event) -> { // InventoryCloseEvent
+    // Custom handler here
+});
+```
+In order to access the `Menu` object that called your handler, you will need to build the menu first and then set its on-click handler. <small>This is planned to change in a future version, where the menu is passed as a parameter for the lambda handler.</small>
+```java
+Menu menu = myMenuBuilder.build();
+menu.setOnClick((event) -> {
+    menu.modify(); // Example
+});
+menu.openMenu(player);
+```
+This can be useful if you for example wish to know what page a player is on when handling an on-click event:
+```java
+PagedMenu pagedMenu = myPagedMenuBuilder.build();
+pagedMenu.setOnClick((event) -> {
+    int pageNumber = pagedMenu.getViewerPage(event.getWhoClick().getUniqueId());
+});
+pagedMenu.openMenu(player);
+```
+<small>It is also planned to change in a future version that menu-wide handlers for paged menus will include the page the viewer was on when the event was fired as a parameter.</small>
 
 ### Blocking interactions in menus
 By default, all menus do not allow the user to modify their contents by dragging items in the GUI. This default can be changed for the entire menu by running 
 ```java
 myMenuBuilder.setInteractionsBlocked(false);
 ```
-This will allow viewers to move **all** items inside the inventory. You may want to block this function for only some items, and this can be done by overriding the default setting for specific menu items. Each MenuItem defaults to use the same `interactionsBlocked` value as their parent menu. By running the following you can change this for a single item: 
+This will allow viewers to move **all** items inside the inventory. You may want to block this function for only some items, and this can be done by overriding the default setting for specific menu items. Each `MenuItem` defaults to use the same `interactionsBlocked` value as their parent menu. By running the following you can change this for a single item: 
 ```java
 myItemBuilder.setIteractionsBlocked(false);
 ```
 
 ### Menu generators and menu item generators (custom menus for each player)
-TODO
+To create menus which are not uniform for each player, rather contain details relevant to each unique viewer, you can use a `MenuGenerator` and `MenuItemGenerator`s. The idea is to differentiate between the static elements in a menu that stay the same for all users, and ones that are dynamic. By creating the static details only once instead of every time you open the menu, you can save computation time in your plugin and keep things synchronous. 
+
+<i>This feature is not fully implemented and will come in a future version.</i>
 
 ### Shop menus
 TODO
