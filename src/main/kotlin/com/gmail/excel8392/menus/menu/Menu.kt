@@ -37,8 +37,8 @@ open class Menu @JvmOverloads constructor(
     var size: Int = 0,
     val animations: List<MenuAnimation>,
     val interactionsBlocked: Boolean = true,
-    protected val onClickHandler: (InventoryClickEvent) -> Unit = {},
-    protected val onCloseHandler: (InventoryCloseEvent) -> Unit = {}
+    protected val onClickHandler: ((InventoryClickEvent, Menu) -> Unit)? = null,
+    protected val onCloseHandler: ((InventoryCloseEvent, Menu) -> Unit)? = null
 ): InventoryHolder {
 
     // It should be noted that we are leaking "this" in the Bukkit.createInventory,
@@ -140,7 +140,7 @@ open class Menu @JvmOverloads constructor(
      */
     open fun onClick(event: InventoryClickEvent) {
         // Run the on click handler
-        onClickHandler(event)
+        onClickHandler?.invoke(event, this)
 
         // Check to see if there is a menu item in this slot
         if (!containsMenuItem(event.slot)) return
@@ -159,7 +159,7 @@ open class Menu @JvmOverloads constructor(
      */
     open fun onClose(event: InventoryCloseEvent) {
         // Run the on close handler
-        onCloseHandler(event)
+        onCloseHandler?.invoke(event, this)
         // Stop any running animations for this player
         if (runningAnimations.containsKey(event.player.uniqueId)) runningAnimations[event.player.uniqueId]!!.stop()
         runningAnimations.remove(event.player.uniqueId)

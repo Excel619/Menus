@@ -32,8 +32,8 @@ class PagedMenu @JvmOverloads constructor(
     private val pages: List<Page>,
     animations: List<MenuAnimation>,
     interactionsBlocked: Boolean = true,
-    onClickHandler: (InventoryClickEvent) -> Unit = {},
-    onCloseHandler: (InventoryCloseEvent) -> Unit = {}
+    onClickHandler: ((InventoryClickEvent, PagedMenu) -> Unit)? = null,
+    onCloseHandler: ((InventoryCloseEvent, PagedMenu) -> Unit)? = null
 ): Menu(
     menusAPI,
     pages.firstOrNull()?.title ?: throw IllegalArgumentException("PagedMenu must have at least one page!"),
