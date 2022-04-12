@@ -37,8 +37,8 @@ open class Menu @JvmOverloads constructor(
     var size: Int = 0,
     val animations: List<MenuAnimation>,
     val interactionsBlocked: Boolean = true,
-    protected val onClickHandler: ((InventoryClickEvent, Menu) -> Unit)? = null,
-    protected val onCloseHandler: ((InventoryCloseEvent, Menu) -> Unit)? = null
+    protected val onClickHandler: (InventoryClickEvent) -> Unit = {},
+    protected val onCloseHandler: (InventoryCloseEvent) -> Unit = {}
 ): InventoryHolder {
 
     // It should be noted that we are leaking "this" in the Bukkit.createInventory,
@@ -127,10 +127,10 @@ open class Menu @JvmOverloads constructor(
      * @param player Menu viewer
      */
     protected open fun beginAnimation(player: Player) {
-        Bukkit.getScheduler().runTaskTimer(menusAPI.plugin, Runnable {
+        if (animations.size > 0) {
             runningAnimations[player.uniqueId] = RunningAnimations(player)
             runningAnimations[player.uniqueId]!!.start()
-        }, 0L, animationInterval)
+        }
     }
 
     /**
@@ -140,7 +140,7 @@ open class Menu @JvmOverloads constructor(
      */
     open fun onClick(event: InventoryClickEvent) {
         // Run the on click handler
-        onClickHandler?.invoke(event, this)
+        onClickHandler(event)
 
         // Check to see if there is a menu item in this slot
         if (!containsMenuItem(event.slot)) return
@@ -150,6 +150,8 @@ open class Menu @JvmOverloads constructor(
         event.isCancelled = clickedMenuItem.interactionsBlocked
         // Fire the on click event for the menu item
         clickedMenuItem.onClick(event, this)
+
+        
     }
 
     /**
@@ -159,10 +161,12 @@ open class Menu @JvmOverloads constructor(
      */
     open fun onClose(event: InventoryCloseEvent) {
         // Run the on close handler
-        onCloseHandler?.invoke(event, this)
+        onCloseHandler(event)
         // Stop any running animations for this player
-        if (runningAnimations.containsKey(event.player.uniqueId)) runningAnimations[event.player.uniqueId]!!.stop()
-        runningAnimations.remove(event.player.uniqueId)
+        if (runningAnimations.containsKey(event.player.uniqueId)) {
+            runningAnimations[event.player.uniqueId]!!.stop()
+            runningAnimations.remove(event.player.uniqueId)
+        }
         viewers.remove(event.player)
     }
 

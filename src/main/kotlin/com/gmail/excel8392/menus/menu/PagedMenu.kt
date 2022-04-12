@@ -32,8 +32,8 @@ class PagedMenu @JvmOverloads constructor(
     private val pages: List<Page>,
     animations: List<MenuAnimation>,
     interactionsBlocked: Boolean = true,
-    onClickHandler: ((InventoryClickEvent, PagedMenu) -> Unit)? = null,
-    onCloseHandler: ((InventoryCloseEvent, PagedMenu) -> Unit)? = null
+    onClickHandler: (InventoryClickEvent) -> Unit = {},
+    onCloseHandler: (InventoryCloseEvent) -> Unit = {}
 ): Menu(
     menusAPI,
     pages.firstOrNull()?.title ?: throw IllegalArgumentException("PagedMenu must have at least one page!"),
@@ -138,8 +138,9 @@ class PagedMenu @JvmOverloads constructor(
      */
     fun openMenuPage(player: Player, page: Int) {
         if (!isValidPage(page)) throw IllegalArgumentException("Page $page does not exist in this menu!")
-        player.openInventory(getInventoryPage(page))
         viewerPages[player.uniqueId] = page
+        player.openInventory(getInventoryPage(page))
+        beginAnimation(player)
     }
 
     /**
