@@ -4,8 +4,6 @@ import com.gmail.excel8392.menus.action.MenuAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import java.util.LinkedList
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 /**
  * An ItemStack wrapper for items inside custom menus.
@@ -59,6 +57,6 @@ open class MenuItem @JvmOverloads constructor(
      *
      * @param defaultInteractionsBlocked Menu default value
      */
-    fun applyDefaultInteractionsBlocked(defaultInteractionsBlocked: Boolean) = internalInteractionsBlocked ?: run { interactionsBlocked = defaultInteractionsBlocked }
+    internal fun applyDefaultInteractionsBlocked(defaultInteractionsBlocked: Boolean) = internalInteractionsBlocked ?: run { interactionsBlocked = defaultInteractionsBlocked }
 
 }

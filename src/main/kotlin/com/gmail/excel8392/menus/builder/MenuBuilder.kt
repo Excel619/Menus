@@ -193,6 +193,6 @@ interface MenuBuilder<T: MenuBuilder<T>>: Cloneable {
      *
      * @return Cloned builder
      */
-    override fun clone(): T
+    public override fun clone(): T
 
 }

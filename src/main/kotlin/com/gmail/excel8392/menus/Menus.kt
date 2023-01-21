@@ -1,5 +1,6 @@
 package com.gmail.excel8392.menus
 
+import com.gmail.excel8392.menus.handle.MenusListener
 import com.gmail.excel8392.menus.menu.Menu
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player

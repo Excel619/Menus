@@ -40,15 +40,6 @@ interface MenusAPI {
     fun openMenu(player: Player, menu: MenuBuilder<*>) = openMenu(player, menu.build())
 
     /**
-     * Open a menu GUI for one viewer.
-     * The MenuGenerator is used immediately to generate a new Menu instance.
-     *
-     * @param player Menu viewer
-     * @param menu Menu to open
-     */
-    fun openMenu(player: Player, menu: MenuGenerator) = openMenu(player, menu.generateMenu(player))
-
-    /**
      * Creates a basic menu builder, for building new menus.
      *
      * @param title Title of the menu
