@@ -49,6 +49,7 @@ open class MenuItem @JvmOverloads constructor(
      * @param menu Menu that this button is in
      */
     fun onClick(event: InventoryClickEvent, menu: Menu) {
+        if (interactionsBlocked != menu.interactionsBlocked) event.isCancelled = interactionsBlocked
         for (action in actions) action.execute(event, menu)
     }
 

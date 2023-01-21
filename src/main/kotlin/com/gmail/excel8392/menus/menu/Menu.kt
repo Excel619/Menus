@@ -127,10 +127,10 @@ open class Menu @JvmOverloads constructor(
      * @param player Menu viewer
      */
     protected open fun beginAnimation(player: Player) {
-        Bukkit.getScheduler().runTaskTimer(menusAPI.plugin, Runnable {
+        if (animations.size > 0) {
             runningAnimations[player.uniqueId] = RunningAnimations(player)
             runningAnimations[player.uniqueId]!!.start()
-        }, 0L, animationInterval)
+        }
     }
 
     /**
@@ -150,6 +150,8 @@ open class Menu @JvmOverloads constructor(
         event.isCancelled = clickedMenuItem.interactionsBlocked
         // Fire the on click event for the menu item
         clickedMenuItem.onClick(event, this)
+
+        
     }
 
     /**
@@ -161,8 +163,10 @@ open class Menu @JvmOverloads constructor(
         // Run the on close handler
         onCloseHandler(event)
         // Stop any running animations for this player
-        if (runningAnimations.containsKey(event.player.uniqueId)) runningAnimations[event.player.uniqueId]!!.stop()
-        runningAnimations.remove(event.player.uniqueId)
+        if (runningAnimations.containsKey(event.player.uniqueId)) {
+            runningAnimations[event.player.uniqueId]!!.stop()
+            runningAnimations.remove(event.player.uniqueId)
+        }
         viewers.remove(event.player)
     }
 

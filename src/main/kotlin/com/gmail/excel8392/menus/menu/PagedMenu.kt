@@ -138,8 +138,9 @@ class PagedMenu @JvmOverloads constructor(
      */
     fun openMenuPage(player: Player, page: Int) {
         if (!isValidPage(page)) throw IllegalArgumentException("Page $page does not exist in this menu!")
-        player.openInventory(getInventoryPage(page))
         viewerPages[player.uniqueId] = page
+        player.openInventory(getInventoryPage(page))
+        beginAnimation(player)
     }
 
     /**
@@ -149,6 +150,19 @@ class PagedMenu @JvmOverloads constructor(
      * @return Is valid page
      */
     fun isValidPage(page: Int) = page in 0 until inventories.size
+
+    /**
+     * Get the current page a player is viewing.
+     *
+     * @param uuid Player UUID
+     * @return Page number
+     *
+     * @throws IllegalArgumentException if player is not viewing this menu
+     */
+    fun getViewerPage(uuid: UUID): Int {
+        if (viewerPages.containsKey(uuid)) return viewerPages[uuid]!!
+        throw IllegalArgumentException("Viewer $uuid is not viewing this menu!")
+    }
 
     /**
      * Length of this menu, how many pages it has
