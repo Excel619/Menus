@@ -9,28 +9,24 @@ group = "com.gmail.excel8392.menus"
 version = "1.0"
 
 repositories {
-    mavenCentral()
-
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
-    maven("https://oss.sonatype.org/content/repositories/central")
-
     mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT") // The Spigot API with no shadowing. Requires the OSS repo.
+    compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    implementation(kotlin("stdlib"))
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
+    kotlinOptions.jvmTarget = "17"
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }

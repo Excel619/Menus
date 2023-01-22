@@ -19,12 +19,12 @@ class ItemShopCondition constructor(
 ): ShopCondition {
 
     override fun checkCondition(viewer: Player, menu: Menu): Boolean {
-        for (pair in items) {
+        items@ for (pair in items) {
             var contains = 0
-            itemCheck@ for (target in viewer.inventory.contents) {
+            contents@ for (target in (viewer.inventory.contents ?: continue).filterNotNull()) {
                 if (target.isSimilar(pair.first)) {
                     contains += target.amount
-                    if (contains >= pair.second) break@itemCheck
+                    if (contains >= pair.second) break@contents
                 }
             }
             if (contains > 0) return false

@@ -1,6 +1,6 @@
-package com.gmail.excel8392.menus.builder
+package com.gmail.excel8392.menus.generator
 
-import com.gmail.excel8392.menus.generator.MenuGenerator
+import com.gmail.excel8392.menus.builder.MenuBuilder
 import org.bukkit.entity.Player
 
 /**
@@ -16,13 +16,13 @@ import org.bukkit.entity.Player
  * @see com.gmail.excel8392.menus.generator.MenuGenerator
  * @see com.gmail.excel8392.menus.menu.Menu
  */
-class MenuGeneratorBuilder<T: MenuBuilder<T>> @JvmOverloads constructor(var menuBuilder: MenuBuilder<T>, var lazy: Boolean = true) {
+class MenuGeneratorBuilder<T: MenuBuilder<T>> @JvmOverloads constructor(var menuBuilder: T, var lazy: Boolean = true) {
 
     /** */
-    private var staticGenerator: ((MenuBuilder<T>) -> Unit)? = null
-    private var dynamicGenerator: ((MenuBuilder<T>, Player) -> Unit)? = null
+    private var staticGenerator: ((T) -> Unit)? = null
+    private var dynamicGenerator: ((T, Player) -> Unit)? = null
 
-    fun setMenuBuilder(menuBuilder: MenuBuilder<T>): MenuGeneratorBuilder<T> {
+    fun setMenuBuilder(menuBuilder: T): MenuGeneratorBuilder<T> {
         this.menuBuilder = menuBuilder
         return this
     }
@@ -32,12 +32,12 @@ class MenuGeneratorBuilder<T: MenuBuilder<T>> @JvmOverloads constructor(var menu
         return this
     }
 
-    fun setStaticElementGenerator(staticGenerator: (MenuBuilder<T>) -> Unit): MenuGeneratorBuilder<T> {
+    fun setStaticElementGenerator(staticGenerator: (T) -> Unit): MenuGeneratorBuilder<T> {
         this.staticGenerator = staticGenerator
         return this
     }
 
-    fun setDynamicElementGenerator(dynamicGenerator: (MenuBuilder<T>, Player) -> Unit): MenuGeneratorBuilder<T> {
+    fun setDynamicElementGenerator(dynamicGenerator: (T, Player) -> Unit): MenuGeneratorBuilder<T> {
         this.dynamicGenerator = dynamicGenerator
         return this
     }
@@ -45,13 +45,13 @@ class MenuGeneratorBuilder<T: MenuBuilder<T>> @JvmOverloads constructor(var menu
     fun build() = object: MenuGenerator<T>(lazy = lazy) {
         // Save reference to generators and not the builder so that it can be garbage collected
         // Type erasure may cause some issues, be careful
-        val staticGenerator: ((MenuBuilder<T>) -> Unit)? = this@MenuGeneratorBuilder.staticGenerator
-        val dynamicGenerator: ((MenuBuilder<T>, Player) -> Unit)? = this@MenuGeneratorBuilder.dynamicGenerator
-        val menuBuilder: MenuBuilder<T> = this@MenuGeneratorBuilder.menuBuilder
+        val staticGenerator: ((T) -> Unit)? = this@MenuGeneratorBuilder.staticGenerator
+        val dynamicGenerator: ((T, Player) -> Unit)? = this@MenuGeneratorBuilder.dynamicGenerator
+        val menuBuilder: T = this@MenuGeneratorBuilder.menuBuilder
 
         override fun generateMenuBuilder() = menuBuilder
-        override fun applyStaticElements(menuBuilder: MenuBuilder<T>): Unit = run { staticGenerator?.invoke(menuBuilder) }
-        override fun applyDynamicElements(menuBuilder: MenuBuilder<T>, viewer: Player): Unit = run { dynamicGenerator?.invoke(menuBuilder, viewer) }
+        override fun applyStaticElements(menuBuilder: T): Unit = run { staticGenerator?.invoke(menuBuilder) }
+        override fun applyDynamicElements(menuBuilder: T, viewer: Player): Unit = run { dynamicGenerator?.invoke(menuBuilder, viewer) }
     }
 
 }

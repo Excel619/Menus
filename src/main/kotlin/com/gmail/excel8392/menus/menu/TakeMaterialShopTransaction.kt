@@ -24,7 +24,7 @@ class TakeMaterialShopTransaction @JvmOverloads constructor(
     override fun applyTransaction(viewer: Player, menu: Menu): Boolean {
         if (!MaterialShopCondition(material, amount).checkCondition(viewer, menu)) return false
         var leftToRemove = amount
-        for ((slot, target) in viewer.inventory.contents.withIndex()) {
+        for ((slot, target) in (viewer.inventory.contents ?: return false).filterNotNull().withIndex()) {
             if (target.type == material) {
                 if (target.amount > leftToRemove) {
                     target.amount -= leftToRemove

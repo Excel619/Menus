@@ -17,7 +17,7 @@ import org.bukkit.entity.Player
  *
  * @see com.gmail.excel8392.menus.menu.Menu
  * @see com.gmail.excel8392.menus.builder.MenuBuilder
- * @see com.gmail.excel8392.menus.builder.MenuGeneratorBuilder
+ * @see com.gmail.excel8392.menus.generator.MenuGeneratorBuilder
  */
 abstract class MenuGenerator<T: MenuBuilder<T>>(protected val lazy: Boolean = true) {
 
@@ -42,7 +42,7 @@ abstract class MenuGenerator<T: MenuBuilder<T>>(protected val lazy: Boolean = tr
      *
      * @return a new menu builder used for creating the menu
      */
-    protected abstract fun generateMenuBuilder(): MenuBuilder<T>
+    protected abstract fun generateMenuBuilder(): T
 
     /**
      * Applies the static elements to the generated menu builder. This method is only called once,
@@ -52,14 +52,14 @@ abstract class MenuGenerator<T: MenuBuilder<T>>(protected val lazy: Boolean = tr
      *
      * @param menuBuilder MenuBuilder to apply static elements to
      */
-    protected abstract fun applyStaticElements(menuBuilder: MenuBuilder<T>)
+    protected abstract fun applyStaticElements(menuBuilder: T)
 
     /**
      * Applies the dynamic elements to a cloned menu builder. This method is called every time a player opens the menu.
      *
      * @param menuBuilder MenuBuilder to apply dynamic elements to
      */
-    protected abstract fun applyDynamicElements(menuBuilder: MenuBuilder<T>, viewer: Player)
+    protected abstract fun applyDynamicElements(menuBuilder: T, viewer: Player)
 
     /**
      * Generate and open a menu for a player. Immediately applies dynamic elements to a cloned

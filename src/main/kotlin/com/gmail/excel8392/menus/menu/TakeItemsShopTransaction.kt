@@ -25,7 +25,7 @@ class TakeItemsShopTransaction constructor(
             val item = pair.first
             val amount = pair.second
             var leftToRemove = amount
-            for ((slot, target) in viewer.inventory.contents.withIndex()) {
+            for ((slot, target) in (viewer.inventory.contents ?: continue).filterNotNull().withIndex()) {
                 if (target.isSimilar(item)) {
                     if (target.amount > leftToRemove) {
                         target.amount -= leftToRemove

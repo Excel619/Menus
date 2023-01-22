@@ -1,6 +1,7 @@
 package com.gmail.excel8392.menus.builder
 
 import com.gmail.excel8392.menus.MenusAPI
+import com.gmail.excel8392.menus.action.MenuAction
 import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.menu.Menu
 import com.gmail.excel8392.menus.menu.MenuItem
@@ -41,6 +42,9 @@ class BasicMenuBuilder @JvmOverloads constructor(
     private var onClose: (InventoryCloseEvent) -> Unit = {}
     /** Default on click handler */
     private var onClick: (InventoryClickEvent) -> Unit = {}
+
+    /** List of the on click handlers for each specific slot **/
+    private var slotActions: MutableMap<Int, MenuAction> = HashMap()
 
     init {
         title = ChatColor.translateAlternateColorCodes(colorPrefix, title)
@@ -122,16 +126,42 @@ class BasicMenuBuilder @JvmOverloads constructor(
         return this
     }
 
-    override fun build() = Menu(
-        menusAPI,
-        title,
-        items,
-        size,
-        animations,
-        interactionsBlocked = interactionsBlocked,
-        onCloseHandler = onClose,
-        onClickHandler = onClick
-    )
+    /**
+     * Sets the action to perform upon clicking the icon in a given slot.
+     *
+     * @param slot Slot to click on
+     * @param action Action to perform
+     * @return This builder for use in the builder pattern
+     */
+    fun setSlotAction(slot: Int, action: MenuAction): BasicMenuBuilder {
+        slotActions[slot] = action
+        return this
+    }
+
+    /**
+     * Set the map of slots to their actions on click. For use when cloning this menu builder.
+     *
+     * @param slotActions Mapping of slots to actions
+     * @return This builder for use in the builder pattern
+     */
+    fun setSlotActions(slotActions: MutableMap<Int, MenuAction>): BasicMenuBuilder {
+        this.slotActions = slotActions
+        return this
+    }
+
+    override fun build(): Menu {
+        for ((slot, action) in slotActions.entries) items[slot]?.addAction(action)
+        return Menu(
+            menusAPI,
+            title,
+            items,
+            size,
+            animations,
+            interactionsBlocked = interactionsBlocked,
+            onCloseHandler = onClose,
+            onClickHandler = onClick
+        )
+    }
 
     override fun clone(): BasicMenuBuilder {
         val newItems = HashMap<Int, MenuItem>()
@@ -142,6 +172,7 @@ class BasicMenuBuilder @JvmOverloads constructor(
             .setInteractionsBlocked(interactionsBlocked)
             .setOnClose(onClose)
             .setOnClick(onClick)
+            .setSlotActions(slotActions)
     }
 
 }

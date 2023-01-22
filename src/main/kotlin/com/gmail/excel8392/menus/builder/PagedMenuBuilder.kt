@@ -1,6 +1,7 @@
 package com.gmail.excel8392.menus.builder
 
 import com.gmail.excel8392.menus.MenusAPI
+import com.gmail.excel8392.menus.action.MenuAction
 import com.gmail.excel8392.menus.animation.MenuAnimation
 import com.gmail.excel8392.menus.menu.MenuItem
 import com.gmail.excel8392.menus.menu.PagedMenu
@@ -61,6 +62,9 @@ class PagedMenuBuilder @JvmOverloads constructor(
     private var onClose: (InventoryCloseEvent) -> Unit = {}
     /** Lambda to run on click anywhere in the menu */
     private var onClick: (InventoryClickEvent) -> Unit = {}
+
+    /** List of the on click handlers for each specific slot **/
+    private var slotActions: MutableMap<Int, MutableMap<Int, MenuAction>> = HashMap()
 
     init {
         defaultTitle = ChatColor.translateAlternateColorCodes(colorPrefix, defaultTitle)
@@ -265,6 +269,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
         }
     }
 
+    // TODO add option to set different borders for specific pages
     override fun addBorder(borderItem: MenuItem, vararg borders: MenuBuilder.MenuBuilderBorder): PagedMenuBuilder {
         for (borderSide in borders) {
             when (borderSide) {
@@ -278,14 +283,48 @@ class PagedMenuBuilder @JvmOverloads constructor(
         return this
     }
 
-    override fun build() = PagedMenu(
-        menusAPI,
-        pages,
-        animations,
-        interactionsBlocked = interactionsBlocked,
-        onCloseHandler = onClose,
-        onClickHandler = onClick
-    )
+    /**
+     * Sets the action to perform upon clicking the icon in on a given page in a given slot.
+     *
+     * @param slot Slot to click on
+     * @param pageNumber Page number
+     * @param action Action to perform
+     * @return This builder for use in the builder pattern
+     */
+    fun setSlotAction(slot: Int, pageNumber: Int, action: MenuAction): PagedMenuBuilder {
+        if (!slotActions.containsKey(pageNumber)) slotActions[pageNumber] = HashMap()
+        slotActions[pageNumber]!![slot] = action
+        return this
+    }
+
+    /**
+     * Set the map of slots and pages to their actions on click. For use when cloning this menu builder.
+     *
+     * @param slotActions Mapping of slots and pages to actions
+     * @return This builder for use in the builder pattern
+     */
+    fun setSlotActions(slotActions: MutableMap<Int, MutableMap<Int, MenuAction>>): PagedMenuBuilder {
+        this.slotActions = slotActions
+        return this
+    }
+
+    override fun build(): PagedMenu {
+        menuLoop@ for ((pageNumber, page) in slotActions) {
+            if (pageNumber >= pages.size || pageNumber < 0) continue@menuLoop
+            pageLoop@ for ((slot, action) in page) {
+                if (slot < 0 || slot > pages[pageNumber].size || !pages[pageNumber].items.containsKey(slot)) continue@pageLoop
+                pages[pageNumber].items[slot]!!.addAction(action)
+            }
+        }
+        return PagedMenu(
+            menusAPI,
+            pages,
+            animations,
+            interactionsBlocked = interactionsBlocked,
+            onCloseHandler = onClose,
+            onClickHandler = onClick
+        )
+    }
 
     override fun clone(): PagedMenuBuilder {
         val newPages = ArrayList<PagedMenu.Page>()
@@ -300,6 +339,7 @@ class PagedMenuBuilder @JvmOverloads constructor(
             .setInteractionsBlocked(interactionsBlocked)
             .setOnClose(onClose)
             .setOnClick(onClick)
+            .setSlotActions(slotActions)
     }
 
 }

@@ -1,6 +1,7 @@
 package com.gmail.excel8392.menus.action
 
 import com.gmail.excel8392.menus.builder.MenuBuilder
+import com.gmail.excel8392.menus.generator.MenuGenerator
 import com.gmail.excel8392.menus.menu.Menu
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -17,16 +18,23 @@ class OpenMenuAction(private val menuSupplier: (InventoryClickEvent) -> Menu): M
     /**
      * Construct this action using an already constructed menu.
      *
-     * @param menu A menu that has already be generated
+     * @param menu A menu that has already been built
      */
     constructor(menu: Menu): this({menu})
 
     /**
      * Construct this action with a menu builder, which will be built on action execute.
      *
-     * @param menuBuilder A menu builder which can generate a menu
+     * @param menuBuilder A menu builder which can build a menu
      */
     constructor(menuBuilder: MenuBuilder<*>): this({menuBuilder.build()})
+
+    /**
+     * Construct this action with a menu generator, which will be generated on action execute.
+     *
+     * @param menuGenerator A menu generator which can generate a menu
+     */
+    constructor(menuGenerator: MenuGenerator<*>): this({menuGenerator.openMenu(it.whoClicked as Player)})
 
     /**
      * Handles this action executing upon the click of a MenuItem icon in a Menu.
