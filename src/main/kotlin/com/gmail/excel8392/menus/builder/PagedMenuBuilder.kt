@@ -30,7 +30,7 @@ import java.util.LinkedList
  * @see com.gmail.excel8392.menus.builder.MenuBuilder
  * @see com.gmail.excel8392.menus.menu.PagedMenu
  */
-class PagedMenuBuilder @JvmOverloads constructor(
+class PagedMenuBuilder @JvmOverloads internal constructor(
     var menusAPI: MenusAPI,
     var defaultTitle: String,
     val defaultSize: Int,

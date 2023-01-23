@@ -60,6 +60,24 @@ interface MenusAPI {
     fun basicMenuBuilder(title: String, size: Int) = BasicMenuBuilder(this, title, size)
 
     /**
+     * Creates a basic menu builder, for building new menus.
+     *
+     * @param size Size of the menu
+     * @param colorPrefix Color code prefix for elements in the menu
+     * @return Basic menu builder
+     */
+    fun basicMenuBuilder(size: Int, colorPrefix: Char = '&') = BasicMenuBuilder(this, size, colorPrefix)
+
+    /**
+     * Creates a basic menu builder, for building new menus.
+     *
+     * @param size Size of the menu
+     * @return Basic menu builder
+     */
+    // Interface @JvmOverloads don't exist so this is to keep it compatible with JVM
+    fun basicMenuBuilder(size: Int) = BasicMenuBuilder(this, size)
+
+    /**
      * Creates a paged menu builder, for building new menus with multiple pages.
      *
      * @param title Title of the menu

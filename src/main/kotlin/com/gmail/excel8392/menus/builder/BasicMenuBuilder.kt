@@ -25,7 +25,7 @@ import java.util.LinkedList
  * @see com.gmail.excel8392.menus.builder.MenuBuilder
  * @see com.gmail.excel8392.menus.menu.Menu
  */
-class BasicMenuBuilder @JvmOverloads constructor(
+class BasicMenuBuilder @JvmOverloads internal constructor(
     val menusAPI: MenusAPI,
     var title: String,
     override var size: Int,
@@ -59,7 +59,7 @@ class BasicMenuBuilder @JvmOverloads constructor(
      * @param colorPrefix Color code prefix for translating alternate color codes
      */
     @JvmOverloads
-    constructor(menusAPI: MenusAPI, size: Int, colorPrefix: Char = '&'): this(menusAPI, "", size, colorPrefix = colorPrefix)
+    internal constructor(menusAPI: MenusAPI, size: Int, colorPrefix: Char = '&'): this(menusAPI, "", size, colorPrefix = colorPrefix)
 
     override fun setItem(slot: Int, menuItem: MenuItem): BasicMenuBuilder {
         if (slot !in 0 until size) throw IllegalArgumentException("Cannot insert MenuItem at slot $slot because it is greater than the menu size of $size")

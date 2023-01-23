@@ -17,9 +17,9 @@ import org.bukkit.entity.Player
  *
  * @see com.gmail.excel8392.menus.menu.Menu
  * @see com.gmail.excel8392.menus.builder.MenuBuilder
- * @see com.gmail.excel8392.menus.generator.MenuGeneratorBuilder
+ * @see com.gmail.excel8392.menus.generator.MenuTemplateBuilder
  */
-abstract class MenuGenerator<T: MenuBuilder<T>>(protected val lazy: Boolean = true) {
+abstract class MenuTemplate<T: MenuBuilder<T>>(protected val lazy: Boolean = true) {
 
     // Split delegate into different declaration to avoid using kotlin-reflect to get it
     // WARNING: note that using instance data in generateMenuBuilder or applyStaticElements will result
